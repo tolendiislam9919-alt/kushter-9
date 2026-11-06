@@ -1,0 +1,967 @@
+<!DOCTYPE html>
+<html lang="kk">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Механикадағы күштер — 9-сынып</title>
+<style>
+:root{
+  --paper:#f3efe4; --card:#fbf9f3; --ink:#1d2430; --muted:#6a6658; --line:#d8d0bd;
+  --blue:#2d5f4f; --blue-d:#21483c; --yellow:#e0a92e; --red:#b8442f; --green:#2e7d4f; --brass:#c79a3a;
+  --frame:#6b4a2b; --board:#1d2a26;
+  --g0:#c8352b; --g1:#2e7d4f; --g2:#1f5fa8;
+}
+*{box-sizing:border-box}
+html,body{margin:0;height:100%;overflow:hidden;background:#2a2d31}
+body{color:var(--ink);font-family:"Segoe UI","Noto Sans",system-ui,sans-serif}
+.stage{position:absolute;left:0;top:0;width:1600px;height:900px;transform-origin:0 0;background:var(--paper);overflow:hidden;
+  background-image:linear-gradient(rgba(45,95,79,.05) 1px,transparent 1px),linear-gradient(90deg,rgba(45,95,79,.05) 1px,transparent 1px);background-size:24px 24px}
+.top{position:absolute;left:0;right:0;top:0;height:54px;display:flex;align-items:center;gap:14px;padding:0 16px 0 22px;background:var(--blue);color:#fff}
+.top .sign{min-width:34px;height:30px;border-radius:4px;background:var(--brass);display:grid;place-items:center;font:800 13px Georgia,serif;color:#2a1f0c;padding:0 6px;box-shadow:inset 0 -3px 0 rgba(0,0,0,.2)}
+.top .lesson{font-size:13px;letter-spacing:2px;text-transform:uppercase;opacity:.85}
+.top .stitle{font-family:Georgia,"Times New Roman",serif;font-size:20px;font-weight:600;white-space:nowrap}
+.top .sep{width:1px;height:22px;background:rgba(255,255,255,.35)}
+.gchips{margin-left:auto;display:flex;gap:6px}
+.gchip{display:flex;align-items:center;gap:7px;border:none;border-radius:18px;padding:3px 4px 3px 12px;color:#fff;font:600 14px "Segoe UI";cursor:pointer;user-select:none}
+.gchip b{font:800 19px Georgia,serif;min-width:26px;text-align:center}
+.gchip .mn{width:22px;height:22px;border-radius:50%;background:rgba(0,0,0,.25);display:grid;place-items:center;font-size:15px}
+.mainw{position:absolute;left:0;right:0;top:54px;bottom:58px;display:flex}
+.leftw{position:relative;width:1040px;flex:none;transition:width .35s ease}
+.stage.wide .leftw,.stage.noboard .leftw{width:100%}
+.stage.wide .rightw,.stage.noboard .rightw{display:none}
+.slide{position:absolute;inset:0;display:none;overflow:hidden}
+.slide.on{display:block;animation:fadein .3s ease}
+.slide.nofit{padding:18px 26px 14px 30px;flex-direction:column;gap:12px}
+.slide.nofit.on{display:flex}
+.sc{position:absolute;top:13px;left:24px;width:900px;display:flex;flex-direction:column;gap:12px;transform-origin:0 0}
+.duo{display:flex;flex-direction:column;gap:12px}
+.duo>div{display:flex;flex-direction:column;gap:12px;min-width:0}
+.stage.noboard .duo{flex-direction:row;align-items:flex-start;gap:18px}
+.stage.noboard .duo>.pa{flex:1.12} .stage.noboard .duo>.pb{flex:1}
+.leftw.notrans{transition:none}
+@keyframes fadein{from{opacity:0}to{opacity:1}}
+h2.st{font-family:Georgia,"Times New Roman",serif;font-weight:700;font-size:32px;margin:0;color:var(--ink)}
+h2.st small{display:block;font:600 13px "Segoe UI",sans-serif;letter-spacing:2.2px;color:var(--blue);text-transform:uppercase;margin-bottom:3px}
+p.lead{font-size:19px;line-height:1.5;margin:0;color:#2c3340}
+.fbox{background:#fff;border:1px solid var(--line);border-left:6px solid var(--yellow);border-radius:4px;padding:10px 16px;font-family:"Cambria Math","Times New Roman",serif;font-size:20px;line-height:1.6}
+.fbox .big{font-size:28px;font-style:italic;font-weight:600}
+canvas.lab{display:block;max-width:100%;margin:0 auto;border:1px solid var(--line);border-radius:4px;background:#e9e3d3}
+.row{display:flex;gap:14px;align-items:stretch}
+.col{display:flex;flex-direction:column;gap:10px}
+.grow{flex:1;min-width:0}
+.card{background:var(--card);border:1px solid var(--line);border-radius:5px;padding:11px 14px}
+.card h3{margin:0 0 8px;font:700 15px "Segoe UI",sans-serif;text-transform:uppercase;letter-spacing:.6px;color:var(--blue)}
+.ctl .lab{display:flex;justify-content:space-between;align-items:baseline;font-size:15px;color:var(--muted);margin-bottom:4px}
+.ctl .val{font:700 18px Georgia,serif;color:var(--ink)}
+input[type=range]{width:100%;accent-color:var(--blue);height:22px;margin:0}
+.btn{font:inherit;font-size:15px;padding:7px 14px;cursor:pointer;border-radius:4px;border:1px solid #c9c0aa;background:#fff;color:var(--ink)}
+.btn:hover{border-color:var(--blue)}
+.btn.main{background:var(--blue);border-color:var(--blue-d);color:#fff;font-weight:600}
+.btn.main:hover{background:var(--blue-d)}
+.btn.on{background:var(--ink);color:#fff;border-color:var(--ink)}
+.btn:disabled{opacity:.4;cursor:default}
+.warn{border:1px dashed var(--red);background:#fff4f2;border-radius:4px;padding:8px 13px;font-size:16px;line-height:1.45}
+.warn b{color:var(--red)}
+.tip{border:1px dashed var(--blue);background:#eef5f1;border-radius:4px;padding:8px 13px;font-size:16px;line-height:1.45}
+ul.pl{margin:0;padding-left:22px;font-size:19px;line-height:1.6}
+table.t{border-collapse:collapse;width:100%;font-size:16px;background:#fff}
+table.t th,table.t td{border:1px solid var(--line);padding:5px 9px;text-align:center}
+table.t th{background:#e4ece7;font-size:13px;text-transform:uppercase;letter-spacing:.4px;color:#2c3340}
+table.t td.l{text-align:left}
+table.t input{font:inherit;font-size:16px;width:84px;padding:3px 6px;border:1px solid #c9c0aa;border-radius:3px;text-align:center}
+sup,sub{font-size:.72em;line-height:0}
+.good{color:var(--green);font-weight:700} .bad{color:var(--red);font-weight:700}
+.chk{display:flex;gap:10px;align-items:center;flex-wrap:wrap;font-size:17px}
+.chk input{font:inherit;font-size:17px;width:90px;padding:5px 8px;border:1px solid #c9c0aa;border-radius:4px}
+
+/* таразы зертханасы */
+.wset{display:flex;flex-wrap:wrap;gap:6px}
+.wb{font:600 15px Georgia,serif;padding:7px 10px;min-width:60px;border-radius:5px;border:1px solid #a98538;background:linear-gradient(#f3dc9a,#d4ab4f);color:#3a2a08;cursor:pointer}
+.wb.mg{background:linear-gradient(#f2f2f2,#c9ccd0);border-color:#8d939a}
+.wb:disabled{opacity:.25;cursor:default}
+.objs{display:flex;flex-wrap:wrap;gap:6px}
+.status{font-size:17px;line-height:1.45;min-height:50px}
+.status b{color:var(--blue)}
+
+/* таймер */
+.timer{font:700 104px/1 Consolas,monospace;color:var(--ink);text-align:center;letter-spacing:2px}
+.timer.low{color:var(--red)}
+.rot td.cur{background:#fff3cf;font-weight:700}
+.stn{display:inline-block;padding:1px 8px;border-radius:10px;color:#fff;font-size:13px}
+
+/* топқа бөлу */
+.gdiv{display:grid;grid-template-columns:420px 1fr;gap:22px;align-items:start}
+.gcard{width:420px;height:420px;border-radius:22px;display:grid;place-items:center;text-align:center;cursor:pointer;user-select:none;touch-action:manipulation;
+  background:repeating-linear-gradient(45deg,#2d5f4f 0 22px,#346b5a 22px 44px);color:#fff;box-shadow:0 10px 24px rgba(0,0,0,.2),inset 0 0 0 8px rgba(255,255,255,.15);transition:transform .15s}
+.gcard:active{transform:scale(.98)}
+.gcard .q{font:800 120px/1 Georgia,serif}
+.gcard .tx{font:700 26px "Segoe UI";margin-top:8px}
+.gcard.res .q{font-size:46px} .gcard.res .tx{font-size:22px;opacity:.9}
+.gcols{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
+.gcol{background:#fff;border:1px solid var(--line);border-radius:6px;overflow:hidden;min-height:330px}
+.gcol h4{margin:0;padding:8px 10px;color:#fff;font:700 18px "Segoe UI";display:flex;justify-content:space-between}
+.gcol ol{margin:6px 0;padding-left:30px;font-size:16px;line-height:1.55}
+
+/* миға шабуыл */
+.bgrid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}
+.bq{min-height:150px;border-radius:10px;background:#fff;border:2px solid var(--line);padding:12px 14px;cursor:pointer;user-select:none;display:flex;flex-direction:column;justify-content:center;transition:.2s}
+.bq .n{font:800 54px Georgia,serif;color:var(--blue);text-align:center}
+.bq .qq{display:none;font-size:18.5px;line-height:1.4;font-weight:600}
+.bq .aa{display:none;font-size:16.5px;line-height:1.35;color:var(--green);margin-top:8px;border-top:1px dashed var(--line);padding-top:6px}
+.bq.open{border-color:var(--brass);background:#fffaf0} .bq.open .n{display:none} .bq.open .qq{display:block}
+.bq.ans .aa{display:block}
+
+/* топтық тапсырма */
+.gtask{border-radius:8px;background:#fff;border:1px solid var(--line);border-top:8px solid;padding:12px 14px;display:flex;flex-direction:column;gap:8px}
+.gtask h4{margin:0;font:700 19px "Segoe UI"}
+.gtask .tx{font-size:17px;line-height:1.45;flex:1}
+.gtask .ai{display:flex;gap:6px;align-items:center;font-size:16px;flex-wrap:wrap}
+.gtask input{font:inherit;font-size:17px;width:90px;padding:4px 7px;border:1px solid #c9c0aa;border-radius:4px}
+.gtask .r{font-size:15px;min-height:22px}
+
+/* тапсырмалар */
+.who{display:flex;align-items:center;gap:8px;font-size:17px;flex-wrap:wrap}
+.who select{font:inherit;font-size:17px;padding:5px 8px;border:1px solid #c9c0aa;border-radius:4px;min-width:260px}
+.tq{background:#fff;border:1px solid var(--line);border-radius:5px;padding:8px 12px;display:grid;grid-template-columns:46px 1fr;gap:4px 10px;align-items:start}
+.tq .lv{grid-row:span 2;font:800 22px Georgia,serif;color:#fff;border-radius:5px;text-align:center;padding:6px 0}
+.tq .qt{font-size:17px;line-height:1.4}
+.tq .ans{display:flex;flex-wrap:wrap;gap:8px 14px;align-items:center}
+.ai input{font:inherit;font-size:17px;width:110px;padding:4px 7px;border:1px solid #c9c0aa;border-radius:4px}
+.ai input.okk{border-color:var(--green);background:#e8f4ec} .ai input.nok{border-color:var(--red);background:#fdecea}
+.ai{display:flex;gap:6px;align-items:center;font-size:16.5px}
+.ai .r{font-size:14px;min-width:20px}
+.lvA{background:#4f8a6e} .lvB{background:#c79a3a} .lvC{background:#b8442f}
+.score{margin-left:auto;font:700 22px Georgia,serif}
+
+/* бағалау */
+.gwrap{display:grid;grid-template-columns:1fr 330px;gap:16px;flex:1;min-height:0}
+.gtab{overflow:auto;border:1px solid var(--line);border-radius:4px;background:#fff}
+.gtab table.t{font-size:15px} .gtab th{position:sticky;top:0}
+textarea.roster{width:100%;flex:1;font:15px/1.5 "Segoe UI",sans-serif;padding:8px;border:1px solid #c9c0aa;border-radius:4px;resize:none}
+.sum{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
+.sum div{background:#fff;border:1px solid var(--line);border-radius:5px;padding:8px;text-align:center}
+.sum b{display:block;font:700 28px Georgia,serif}
+
+/* дуэль */
+.duel{position:absolute;inset:0;display:grid;grid-template-columns:1fr 170px 1fr;touch-action:none;user-select:none;-webkit-user-select:none}
+.side{padding:18px 22px;display:flex;flex-direction:column;gap:14px}
+.side.A{background:linear-gradient(180deg,#f6dcd8,#efc6c0)} .side.B{background:linear-gradient(180deg,#d9e6f6,#c4d7f0)}
+.side .whoq{display:flex;align-items:center;gap:12px}
+.side .whoq input{font:700 24px Georgia,serif;border:none;border-bottom:2px dashed rgba(0,0,0,.25);background:transparent;width:280px;padding:2px 4px}
+.side .sc2{margin-left:auto;font:800 58px Georgia,serif;line-height:1}
+.side.A .sc2{color:#b8442f} .side.B .sc2{color:#1f5fa8}
+.side .qq2{background:#fff;border-radius:10px;padding:16px 18px;font:700 40px/1.3 "Segoe UI",sans-serif;min-height:170px;text-align:center;display:flex;align-items:center;justify-content:center;box-shadow:0 3px 10px rgba(0,0,0,.08)}
+.side .opts{display:grid;grid-template-columns:1fr 1fr;gap:14px;flex:1;align-content:start}
+.side .o{font:700 34px Georgia,serif;padding:20px 10px;border-radius:12px;border:3px solid rgba(0,0,0,.12);background:#fff;cursor:pointer;touch-action:none;min-height:110px;-webkit-tap-highlight-color:transparent}
+.side .o.good{background:#2e7d4f;color:#fff;border-color:#1f5a38}
+.side .o.badc{background:#c8352b;color:#fff;border-color:#8e241d}
+.side .o.dim{opacity:.4}
+.side .stat{font:600 19px "Segoe UI";min-height:28px;display:flex;justify-content:space-between}
+.pbar{height:10px;background:rgba(255,255,255,.6);border-radius:5px;overflow:hidden}
+.pbar i{display:block;height:100%;width:0;transition:width .3s}
+.side.A .pbar i{background:#b8442f} .side.B .pbar i{background:#1f5fa8}
+.mid{background:var(--ink);color:#fff;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:16px;padding:10px;text-align:center}
+.mid .lbl{font-size:13px;letter-spacing:1.5px;text-transform:uppercase;opacity:.7}
+.mid .clock{font:700 30px Consolas,monospace;color:var(--yellow)}
+.mid .btn{width:140px}
+.overlay{position:absolute;inset:0;background:rgba(29,36,48,.82);display:flex;align-items:center;justify-content:center;z-index:5}
+.overlay .box{background:#fff;border-radius:12px;padding:28px 36px;text-align:center;max-width:760px}
+.overlay h3{font:700 38px Georgia,serif;margin:0 0 10px}
+.overlay p{font-size:20px;color:#444;line-height:1.5}
+
+/* ФС 3D */
+#fs3d{display:block;width:470px;height:560px;border-radius:6px;border:1px solid var(--line);cursor:grab;touch-action:none;background:#dfe6ea}
+.fsq{display:grid;grid-template-columns:auto 1fr;gap:8px 10px;align-items:center;font-size:17px}
+.fsq input{font:inherit;font-size:17px;width:100px;padding:4px 7px;border:1px solid #c9c0aa;border-radius:4px}
+
+/* бағдаршам */
+.lights{display:flex;gap:26px;justify-content:center;align-items:flex-end}
+.lt{display:flex;flex-direction:column;align-items:center;gap:8px}
+.lt .c{width:150px;height:150px;border-radius:50%;display:grid;place-items:center;font:800 54px Georgia,serif;color:#fff;cursor:pointer;box-shadow:inset 0 -10px 0 rgba(0,0,0,.15),0 6px 14px rgba(0,0,0,.15);user-select:none}
+.lt .tx{font-size:17px;text-align:center;max-width:190px;line-height:1.3}
+.lt .mn{font-size:13px;padding:2px 10px}
+.bar{display:flex;height:22px;border-radius:4px;overflow:hidden;border:1px solid var(--line);background:#fff}
+.bar i{display:block;height:100%;transition:width .3s}
+
+/* тақта */
+.rightw{flex:1;padding:14px 18px 14px 22px;display:flex;position:relative;transition:transform .3s}
+.rightw.drag{transition:none}
+.grip{position:absolute;left:0;top:50%;transform:translateY(-50%);width:26px;height:190px;border-radius:10px;background:#8a6a48;cursor:ew-resize;touch-action:none;
+  display:flex;align-items:center;justify-content:center;color:#f1e6d4;font-size:14px;font-weight:600;writing-mode:vertical-rl;letter-spacing:2px;box-shadow:0 3px 8px rgba(0,0,0,.25);z-index:3;user-select:none}
+.btab{position:absolute;right:0;top:50%;transform:translateY(-50%);width:34px;height:170px;border-radius:12px 0 0 12px;background:var(--frame);color:#f1e6d4;
+  display:none;align-items:center;justify-content:center;writing-mode:vertical-rl;font:600 15px "Segoe UI";letter-spacing:2px;cursor:pointer;z-index:6;touch-action:none;box-shadow:-3px 3px 10px rgba(0,0,0,.25)}
+.stage.noboard:not(.wide) .btab{display:flex}
+.board{flex:1;position:relative;border:10px solid var(--frame);border-radius:6px;display:flex;flex-direction:column;overflow:hidden;
+  box-shadow:inset 0 0 40px rgba(0,0,0,.55),0 10px 24px rgba(0,0,0,.25);
+  background:linear-gradient(rgba(255,255,255,.035) 1px,transparent 1px) 0 0/100% 46px,radial-gradient(ellipse at 30% 20%,#25352f 0%,var(--board) 70%)}
+.board::after{content:"";position:absolute;left:0;right:0;bottom:0;height:12px;background:linear-gradient(#5a3e24,#3f2a17);pointer-events:none}
+.tools{display:flex;align-items:center;gap:6px;padding:7px 9px;background:rgba(0,0,0,.25);border-bottom:1px solid rgba(255,255,255,.06);z-index:2;flex-wrap:wrap}
+.sw{width:25px;height:25px;border-radius:50%;border:2px solid transparent;cursor:pointer;padding:0;flex:none}
+.sw.on{border-color:#fff;box-shadow:0 0 0 2px rgba(0,0,0,.6)}
+.tb{white-space:nowrap;font:inherit;font-size:13px;background:rgba(255,255,255,.06);color:#dfe7e2;border:1px solid rgba(255,255,255,.12);border-radius:3px;padding:4px 8px;cursor:pointer;flex:none}
+.tb:hover{background:rgba(255,255,255,.14)} .tb.on{background:#e8e3cf;color:#1d2a26}
+.gapx{flex:1}
+.bhint{position:absolute;left:16px;bottom:22px;right:16px;font-family:Georgia,serif;font-style:italic;font-size:15px;color:rgba(230,240,232,.28);pointer-events:none;z-index:1}
+#ink{display:block;flex:1;min-height:0;width:100%;margin-bottom:12px;touch-action:none;cursor:crosshair;position:relative;z-index:1}
+
+.bottom{position:absolute;left:0;right:0;bottom:0;height:58px;display:flex;align-items:center;gap:8px;padding:0 20px;background:var(--ink)}
+.bottom .btn{background:transparent;color:#e8e8e8;border-color:#4b5262}
+.bottom .btn.main{background:var(--yellow);color:#1d2430;border-color:var(--yellow)}
+.dots{display:flex;gap:3px;margin:0 6px}
+.dot{width:30px;height:30px;border-radius:4px;border:1px solid #4b5262;background:transparent;color:#aab;font-size:12.5px;cursor:pointer;padding:0}
+.dot.on{background:var(--yellow);color:#1d2430;border-color:var(--yellow);font-weight:700}
+.dot.gm{border-color:var(--red)}
+.cnt{margin-left:auto;color:#cfd3dc;font:15px Georgia,serif}
+.toast{position:absolute;left:50%;top:66px;transform:translate(-50%,-10px);background:var(--ink);color:#fff;padding:10px 18px;border-radius:5px;opacity:0;transition:.25s;pointer-events:none;z-index:20;font-size:18px}
+.toast.show{opacity:1;transform:translate(-50%,0)}
+
+.aop{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.aop button{font:inherit;font-size:17px;line-height:1.3;text-align:left;padding:10px 12px;border-radius:5px;border:2px solid var(--line);background:#fff;cursor:pointer;color:var(--ink)}
+.aop button b{display:inline-block;min-width:26px;font-family:Georgia,serif;color:var(--blue)}
+.aop button:disabled{opacity:.45;cursor:default}
+.aop button.ok,.aop button.no{opacity:1!important} .aop button.ok{border-color:var(--green);background:#e6f3ea} .aop button.no{border-color:var(--red);background:#f8e8e4}
+.stage.noboard .duo.astro>.pa{flex:1.6} .stage.noboard .duo.astro .sit{display:none} .stage.noboard .duo.astro .aop{grid-template-columns:1fr}
+#asMsg{font-size:18px;line-height:1.45;min-height:54px}
+
+.ptabs{display:flex;gap:8px;align-items:stretch}
+.ptab{flex:1;font:700 19px "Segoe UI";padding:8px 12px;border-radius:6px;border:3px solid;background:#fff;cursor:pointer;text-align:left;line-height:1.2}
+.ptab small{display:block;font-size:14px;font-weight:500;opacity:.9}
+.ptab.on{color:#fff!important}
+.pttmw{display:flex;align-items:center;gap:6px;background:#fff;border:1px solid var(--line);border-radius:6px;padding:4px 8px}
+.pttm{font:700 40px/1 Consolas,monospace;min-width:118px;text-align:center}
+.pttm.low{color:var(--red)}
+#ptTab td.ok{background:#e6f3ea} #ptTab td.no{background:#f8e8e4}
+#ptTab input{width:96px}
+#ptCtl{display:flex;flex-direction:column;gap:8px}
+.wb,canvas.lab{touch-action:none}
+.duo.ptd{flex-direction:row;align-items:flex-start;gap:18px} .duo.ptd>.pa{flex:1.15} .duo.ptd>.pb{flex:1}
+
+.c3d{display:block;width:640px;height:430px;border-radius:6px;border:1px solid var(--line);cursor:grab;touch-action:none;background:#1d2a26}
+.hud{display:grid;grid-template-columns:auto auto auto auto;gap:4px 14px;font-size:17px;align-items:center;background:#1e2a22;color:#e9f3ec;border-radius:6px;padding:8px 12px;font-family:"Segoe UI"}
+.hud b{font:700 20px Consolas,monospace;color:#8ff0a4} .hud .q{color:#f6d77a}
+.hud .h{font-size:12px;letter-spacing:1px;text-transform:uppercase;opacity:.7}
+.rule{border-left:6px solid var(--brass);background:#fff8e6;border-radius:4px;padding:8px 12px;font-size:17px;line-height:1.45}
+.rule .f{font:700 24px Georgia,serif;color:var(--blue)}
+
+/* §13 термодинамика */
+.stp{font-size:18px;line-height:1.5;padding:5px 0;border-bottom:1px dashed var(--line);opacity:.16;transition:opacity .45s}
+.stp.on{opacity:1}
+.stp b{font:italic 700 21px "Cambria Math","Times New Roman",serif;color:var(--blue)}
+.stp .nt{font-size:14px;color:var(--muted)}
+.stp.fin{border:0;font-size:19px}
+.stp.fin b{font-size:32px;color:var(--red)}
+.qk{background:#fff;border:1px solid var(--line);border-left:5px solid var(--blue);border-radius:5px;padding:8px 12px;font-size:17px;line-height:1.42}
+.qk.good{border-left-color:var(--green)} .qk.fail{border-left-color:var(--red)}
+.qk .qn{font:700 12px "Segoe UI",sans-serif;letter-spacing:1px;text-transform:uppercase;color:var(--blue);margin-bottom:2px}
+.qk .qa{display:flex;flex-wrap:wrap;gap:6px 8px;align-items:center;margin-top:6px}
+.qk .qa input{font:inherit;font-size:17px;width:120px;padding:4px 7px;border:1px solid #c9c0aa;border-radius:4px}
+.qk .ch{font:inherit;font-size:15.5px;line-height:1.3;text-align:left;padding:6px 10px;border-radius:5px;border:2px solid var(--line);background:#fff;cursor:pointer;color:var(--ink)}
+.qk .ch:disabled{opacity:.5;cursor:default} .qk .ch.ok{border-color:var(--green);background:#e6f3ea;opacity:1} .qk .ch.no{border-color:var(--red);background:#f8e8e4}
+.qk .qr{font-size:15.5px;margin-top:4px}
+.qk .sol{display:block;color:#2c3340;background:#f2f6f3;border-radius:4px;padding:4px 8px;margin-top:4px}
+#f1Q,#f2Q{gap:8px}
+.egrid{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.exm{background:#fff;border:1px solid var(--line);border-top:5px solid var(--brass);border-radius:6px;padding:10px 14px;cursor:pointer;user-select:none}
+.exm .et{font-size:18px;line-height:1.45}
+.exm .en{display:inline-grid;place-items:center;width:30px;height:30px;border-radius:50%;background:var(--blue);color:#fff;font:700 16px Georgia,serif;margin-right:8px}
+.exm .sl{display:none;border-top:1px dashed var(--line);margin-top:8px;padding-top:8px;font:19px/1.6 "Cambria Math","Times New Roman",serif;color:#22313a}
+.exm .sl b{color:var(--red)}
+.exm.open .sl{display:block} .exm.open{border-top-color:var(--green)}
+.exm .eh{font-size:13px;color:var(--blue);margin-top:6px;letter-spacing:.5px}
+/* жақындату */
+.zov{position:absolute;inset:0;z-index:30;background:rgba(20,24,30,.8);display:none;align-items:center;justify-content:center}
+.zov.on{display:flex}
+.zwrap{transform-origin:center center;background:var(--paper);border-radius:10px;padding:14px;box-shadow:0 20px 50px rgba(0,0,0,.5)}
+.zwrap>*{margin:0!important}
+.zx{position:absolute;top:18px;right:22px;width:64px;height:64px;border-radius:50%;font:700 30px "Segoe UI",sans-serif;background:#fff;color:var(--ink);border:none;cursor:pointer;box-shadow:0 4px 12px rgba(0,0,0,.3)}
+.zhint{position:absolute;left:50%;bottom:18px;transform:translateX(-50%);color:#dfe3e8;font-size:16px}
+.stage.zpick .slide.on{cursor:zoom-in}
+.stage.zpick .slide.on :is(.qk,.tq,.exm,.bq,.aop,.rule,.fbox,canvas.lab,.card,.tip,.warn):hover{outline:4px solid var(--yellow);outline-offset:2px}
+.bottom #zm{font-weight:700}
+.bottom #zm.on{background:var(--yellow);color:#1d2430;border-color:var(--yellow)}
+
+
+/* изопроцестер */
+.qgrid{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.qgrid .qk{font-size:16.5px}
+.chain{display:flex;align-items:center;justify-content:center;gap:10px;flex-wrap:wrap;background:#fff;border:1px solid var(--line);border-left:6px solid var(--brass);border-radius:4px;padding:8px 12px;min-height:52px}
+.chain .ar{color:#a7a18f;font-size:22px}
+.lk{opacity:.1;transition:opacity .45s}
+.lk.on{opacity:1}
+.chain .lk{font:italic 700 24px "Cambria Math","Times New Roman",serif;color:var(--blue)}
+.chain .lk:last-child{color:var(--red);font-size:28px}
+table.sgn td{font-size:17px;padding:9px}
+table.sgn td.sg{font:800 30px Georgia,serif;width:70px;color:var(--blue)}
+.def2{border-left:6px solid var(--blue);background:#e4ece7;border-radius:4px;padding:10px 14px;font:600 19px/1.45 Georgia,serif}
+.izg{display:grid;grid-template-columns:repeat(4,1fr);gap:10px}
+.izc{background:#fff;border:1px solid var(--line);border-top:7px solid;border-radius:6px;padding:10px 12px}
+.izc .ik{font:italic 700 25px "Cambria Math","Times New Roman",serif}
+.izc h4{margin:5px 0 1px;font:700 18px "Segoe UI",sans-serif}
+.izc .iw{font-size:13.5px;color:var(--muted)}
+.izc p{margin:7px 0 0;font-size:15.5px;line-height:1.4}
+table.cmp td{font-size:16px;padding:9px 7px;height:58px}
+table.cmp td.rv{cursor:pointer;user-select:none;position:relative;background:#f0ead9;color:transparent}
+table.cmp td.rv::after{content:"?";position:absolute;inset:0;display:grid;place-items:center;color:var(--blue);font:700 24px Georgia,serif}
+table.cmp td.rv b{color:transparent}
+table.cmp td.rv.op{background:#fff;color:var(--ink);cursor:default}
+table.cmp td.rv.op b{color:var(--red)}
+table.cmp td.rv.op::after{content:none}
+.sit{font-size:16.5px;line-height:1.45}
+.dchips{display:flex;flex-wrap:wrap;gap:6px;margin-top:7px}
+.dchips span{background:#efe9da;border:1px solid var(--line);border-radius:4px;padding:2px 9px;font:600 14.5px "Segoe UI",sans-serif}
+.lvp{display:flex;flex-direction:column;gap:10px}
+.sum{grid-template-columns:repeat(4,1fr)}
+.sum div{font-size:13px;padding:6px 2px}
+.side .o{font-size:27px;padding:14px 6px}
+.side .qq2{font-size:36px}
+.phchip{margin-left:auto;font:700 15px "Segoe UI";color:#1d2430;background:var(--yellow);border:none;border-radius:16px;padding:6px 14px;cursor:pointer;white-space:nowrap;max-width:520px;overflow:hidden;text-overflow:ellipsis}
+.jn{position:absolute;inset:0;display:grid;grid-template-columns:600px 1fr;gap:26px;padding:20px 30px}
+.jn h2{font:700 36px Georgia,serif;margin:0 0 6px}
+.jn .qrb{width:540px;height:540px;background:#fff;border-radius:14px;padding:12px;border:1px solid var(--line)}
+.jn .qrb svg{width:100%;height:100%;display:block}
+.qrno{height:100%;display:grid;place-items:center;text-align:center;color:var(--red);font:700 26px "Segoe UI"}
+.jnurl{font:700 19px Consolas,monospace;color:var(--blue);word-break:break-all;margin-top:8px}
+.nmg{display:flex;flex-wrap:wrap;gap:9px;align-content:flex-start;background:#fff;border:1px solid var(--line);border-radius:10px;padding:14px;flex:1;min-height:0;overflow:auto}
+.nmc{color:#fff;font:700 21px "Segoe UI";padding:7px 15px;border-radius:20px;cursor:pointer;animation:fadein .3s}
+.phov{position:absolute;inset:0;z-index:30;background:rgba(29,36,48,.82);align-items:center;justify-content:center}
+.phbox{background:var(--card);border-radius:12px;width:1420px;height:790px;padding:18px 22px;display:grid;grid-template-columns:300px 1fr;gap:18px}
+.phbox .qrb{width:280px;height:280px;background:#fff;padding:6px;border:1px solid var(--line);border-radius:8px}
+.phbox .qrb svg{width:100%;height:100%;display:block}
+.phtb{overflow:auto;border:1px solid var(--line);border-radius:6px;background:#fff}
+.rcw{position:absolute;inset:0;display:flex;flex-direction:column;gap:10px;padding:12px 28px}
+.rctt{display:flex;gap:24px;align-items:center;justify-content:space-between}
+.rctt small{font:600 13px "Segoe UI";letter-spacing:2.2px;text-transform:uppercase;color:var(--blue)}
+.rctt h2{font:700 46px/1.1 Georgia,serif;margin:2px 0 6px}.rctt p{font-size:20px;line-height:1.4;margin:0;max-width:1120px}
+.rcqr{width:230px;height:230px;flex:none;background:#fff;padding:6px;border-radius:10px;border:1px solid var(--line)}.rcqr svg{width:100%;height:100%;display:block}
+#rcTop{flex:none;min-height:96px}
+.rcq{display:flex;align-items:center;gap:16px;min-height:90px;background:#fff;border:1px solid var(--line);border-radius:10px;padding:8px 16px}
+.rcn{font:800 24px Georgia,serif;color:var(--blue);flex:none}
+.rcqt{flex:1;font:700 34px/1.2 "Segoe UI",sans-serif;text-align:center}
+.rcsec{flex:none;width:76px;height:76px;border-radius:50%;background:var(--ink);color:#fff;display:grid;place-items:center;font:800 34px Georgia,serif}
+.rctm{height:10px;background:#e4dcc9;border-radius:5px;overflow:hidden;margin-top:6px}.rctm i{display:block;height:100%;width:100%;background:var(--red);transition:width .2s linear}
+.rccd{font:800 76px/1 Georgia,serif;color:var(--red)}
+.rcwin{font:800 44px Georgia,serif;color:var(--ink)}
+canvas#cRace{width:100%;height:auto;border:none;border-radius:8px;background:#7fb069;flex:none}
+.rcopts{display:grid;grid-template-columns:1fr 1fr;gap:9px;flex:1;min-height:0}
+.rco{display:flex;align-items:center;gap:14px;color:#fff;border-radius:10px;padding:6px 18px;font:700 25px/1.15 "Segoe UI",sans-serif;min-height:64px}
+.rco b{font-size:30px;flex:none}.rco span{flex:1}.rco em{font:800 30px Georgia,serif;font-style:normal;flex:none}
+.rco.o0{background:#d63a35}.rco.o1{background:#1f6fc4}.rco.o2{background:#d09a12}.rco.o3{background:#2a8f4d}
+.rco.dim{opacity:.28}.rco.right{outline:5px solid #1d2430;outline-offset:-5px}
+.rcctl{display:flex;align-items:center;gap:10px;flex-wrap:wrap;flex:none}
+.rcfan{font-size:19px}.rcurl{margin-left:auto;font:700 16px Consolas,monospace;color:var(--blue)}
+.rcslots{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}
+.rcsl{display:flex;align-items:center;justify-content:space-between;color:#fff;font:700 26px "Segoe UI";padding:12px 16px;border-radius:10px;min-height:66px}
+.rcsl.em{background:#fff;border:3px dashed;font-size:20px;justify-content:center}
+.rcsl button{background:rgba(0,0,0,.25);color:#fff;border:none;border-radius:50%;width:32px;height:32px;font-size:18px;cursor:pointer}
+.rcboard{margin-left:auto;display:flex;gap:8px}.rcb{background:#fff;border:1px solid var(--line);border-left:6px solid;border-radius:6px;padding:4px 12px;font-size:17px;display:flex;gap:10px;align-items:center}.rcb b{font:800 21px Georgia,serif}
+.rcend{display:grid;grid-template-columns:1fr 420px;gap:16px;flex:1;min-height:0}
+.rcpod{display:flex;align-items:flex-end;justify-content:center;gap:14px}
+.pd{width:270px;color:#fff;border-radius:10px 10px 0 0;text-align:center;padding:10px;font:700 24px "Segoe UI";display:flex;flex-direction:column;justify-content:center;gap:2px}
+.pd b{font:800 36px Georgia,serif}.pd small{font-size:15px;font-weight:500}.pd .pn{font-size:16px;opacity:.9}.pd.p0{min-height:230px}.pd.p1{min-height:180px}.pd.p2{min-height:145px}
+.rcfl{background:#fff;border:1px solid var(--line);border-radius:10px;padding:10px 14px;font-size:18px;line-height:1.5}.rcfl h4{margin:0 0 4px;font:700 15px "Segoe UI";text-transform:uppercase;letter-spacing:.6px;color:var(--blue)}
+
+/* §18 */
+:root{--blue:#3c4a8c;--blue-d:#2c376b}
+.top{background:var(--blue)}
+.phchip{margin-left:auto}
+.fstop{margin-left:10px;font:700 15px "Segoe UI";background:#fff;color:var(--ink);border:none;border-radius:6px;padding:7px 16px;cursor:pointer;white-space:nowrap}
+.fstop:hover{background:#ffe9b5}
+.srt{display:grid;grid-template-columns:1fr 1fr 1fr;gap:9px}
+.sri{background:#fff;border:1px solid var(--line);border-left:6px solid var(--line);border-radius:6px;padding:9px 11px;font-size:17px;display:flex;flex-direction:column;gap:7px;justify-content:space-between;min-height:104px}
+.sri div{display:flex;gap:6px}.sri .btn{flex:1}
+.sri.ok{border-left-color:var(--green);background:#eef7f0}.sri.no{border-left-color:var(--red);background:#fbeeeb}
+.ctlg{display:flex;gap:14px;align-items:flex-end}.ctlg .ctl{flex:1;min-width:0}
+.ff{font:italic 700 18px "Cambria Math","Times New Roman",serif;color:var(--red);margin-top:4px}
+.yn{display:flex;flex-direction:column;gap:9px}
+.yni{background:#fff;border:1px solid var(--line);border-left:6px solid var(--line);border-radius:6px;padding:10px 14px;font-size:19px;line-height:1.35;display:grid;grid-template-columns:1fr auto;gap:4px 14px;align-items:center}
+.yni div{display:flex;gap:6px}.yni .btn{font-size:17px;min-width:66px}
+.yni em{grid-column:1/-1;font:600 16px "Segoe UI";color:#2c3340;font-style:normal}.yni em:empty{display:none}
+.yni.ok{border-left-color:var(--green);background:#eef7f0}.yni.no{border-left-color:var(--red);background:#fbeeeb}
+.sri .btn{padding:6px 2px;font-size:14px}
+.ex18{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.exr{display:flex;align-items:center;gap:7px;font-size:17px;margin-bottom:6px}
+.exr .x{min-width:76px;font-weight:600}
+.exr input{font:inherit;width:80px;padding:3px 6px;border:1px solid #c9c0aa;border-radius:4px}
+.exr input.okk{border-color:var(--green);background:#e8f4ec}.exr input.nok{border-color:var(--red);background:#fdecea}
+.exr .btn{padding:2px 9px;font-size:14px}.exr .r{font-size:14.5px}
+.rcw{gap:7px;padding:8px 22px}
+#rcTop{min-height:0}
+canvas#cRace{width:100%;height:auto}
+.rclob{display:grid;grid-template-columns:440px 1fr;gap:22px;align-items:start}
+.rclob .rcqr{width:440px;height:440px}
+.rclt small{font:600 13px "Segoe UI";letter-spacing:2.2px;text-transform:uppercase;color:var(--blue)}
+.rclt h2{font:700 44px/1.1 Georgia,serif;margin:2px 0 6px}
+.rclt p{font-size:21px;line-height:1.4;margin:0 0 8px}
+.rcwifi{background:#fff4d9;border:1px solid #e6cf8f;border-radius:8px;padding:6px 12px;font-size:20px;margin-bottom:8px}
+.rcur{display:flex;gap:14px;align-items:baseline;font:700 18px Consolas,monospace;color:var(--blue);margin-bottom:6px;flex-wrap:wrap}
+.rccn{font-size:23px;margin-bottom:6px}.rccn b{font:800 36px Georgia,serif}
+.nmg{display:flex;flex-wrap:wrap;gap:6px;align-content:flex-start}
+.nmc{font-size:18px;padding:5px 12px}
+.big2{font-size:26px!important;padding:11px 24px!important}
+.rcq{min-height:76px;padding:5px 14px}
+.rcqt{font-size:30px}
+.rcqt small{display:block;font:600 18px "Segoe UI";color:var(--green);margin-top:2px}
+.rcsec{width:62px;height:62px;font-size:28px}
+.rcac{flex:none;display:flex;flex-direction:column;align-items:center;font-size:12.5px;gap:1px}.rcac b{font:800 22px Georgia,serif}.rcac .btn{padding:2px 7px;font-size:12.5px}
+.rcnx{flex:none;font-size:25px!important;padding:12px 20px!important}
+.rcopts{grid-template-columns:repeat(4,1fr);gap:7px}
+.rco{min-height:52px;font-size:20px;padding:4px 12px;gap:8px}.rco b{font-size:23px}.rco em{font-size:25px}
+.rcwin{font-size:38px}
+.rcend{grid-template-columns:1fr 830px;height:490px}
+.pd{width:210px;font-size:20px}.pd b{font-size:30px}
+.rcall{columns:2;font-size:17px;line-height:1.55}
+.rcall div{display:flex;align-items:center;gap:6px;break-inside:avoid}.rcall i{width:12px;height:12px;border-radius:50%;flex:none}.rcall b{margin-left:auto;padding-right:14px;font-family:Georgia,serif}
+.phov .phbox{display:flex;flex-direction:column;align-items:center;width:880px;height:auto;gap:12px;position:relative}
+</style>
+</head>
+<body>
+<div class="stage" id="stage">
+  <div class="top"><span class="sign">F</span><span class="lesson">Физика · 9-сынып</span><span class="sep"></span><span class="stitle" id="stitle"></span><button class="phchip" id="phChip">📱 QR</button><button class="fstop" id="fs">⛶ Толық экран</button></div>
+  <div class="mainw">
+    <div class="leftw" id="slides">
+
+
+<!-- 1 -->
+<section class="slide" data-title="Кіріспе" data-hint="Механикадағы күштер: ауырлық, серпімділік, үйкеліс. Оқу мақсаты 9.2.2.3">
+  <h2 class="st" style="font-size:44px;line-height:1.1;margin-top:6px"><small>9-сынып · Динамика негіздері</small>Механикадағы күштер</h2>
+  <canvas class="lab" id="cTitle" width="840" height="310"></canvas>
+  <div class="row">
+    <div class="card grow"><h3>Сабақтың мақсаты</h3><div style="font-size:17px;line-height:1.45">Ауырлық, серпімділік және үйкеліс күштерінің табиғатын түсіндіру. F = mg, F = kx, F = μN формулаларын қолдану.</div></div>
+    <div class="card grow"><h3>Сабақ соңында</h3><div style="font-size:17px;line-height:1.45">Телефонмен кіріп, <b>көлік жарысына</b> қатысасың: 10 сұрақ, әр оқушының өз көлігі бар.</div></div>
+  </div>
+  <div style="font-size:14.5px;color:var(--muted)">«Тайтөбе ауылының жалпы орта білім беретін мектебі» КММ · мұғалім Төленді И.Н.</div>
+</section>
+
+<!-- 2 -->
+<section class="slide" data-title="Өткенді қайталау: иә немесе жоқ" data-hint="Ньютонның І заңы: ΣF = 0 болса, дене тыныштықта не бірқалыпты қозғалады">
+  <h2 class="st"><small>Сабақты ашамыз · Ньютонның І заңы</small>Иә ме, жоқ па?</h2>
+  <div class="yn" id="yn"></div>
+  <div class="fbox" id="ynR" style="font-size:20px"></div>
+</section>
+
+<!-- 3 -->
+<section class="slide" data-title="Денеге қандай күштер әсер етеді?" data-hint="Күш – вектор: мәні, бағыты, түсу нүктесі. Өлшем бірлігі – 1 Н">
+  <h2 class="st"><small>Жаңа тақырып</small>Білеушеге қандай күштер әсер етеді?</h2>
+  <canvas class="lab" id="cFb" width="840" height="310"></canvas>
+  <div class="row" style="flex-wrap:wrap;gap:6px" id="fbB"><button class="btn" data-f="g">↓ Ауырлық күші</button><button class="btn" data-f="n">↑ Тіректің реакция күші</button><button class="btn" data-f="t">→ Тарту күші (серпімділік)</button><button class="btn" data-f="u">← Үйкеліс күші</button><button class="btn" id="fbAll">Бәрін көрсету</button></div>
+  <div class="row">
+    <div class="card grow" style="font-size:16.5px;line-height:1.45"><h3>Күш – вектор</h3>Оның <b>мәні</b>, <b>бағыты</b> және <b>түсу нүктесі</b> бар. Күшті бағытталған кесіндімен көрсетеміз. Өлшем бірлігі – <b>1 ньютон</b>.</div>
+    <div class="card grow" style="font-size:16.5px;line-height:1.45"><h3>Ойланайық</h3>Білеуше бірқалыпты қозғалады. Ньютонның І заңы бойынша күштер туралы не айтуға болады? <b>Олар теңгеріледі:</b> F<sub>тарту</sub> = F<sub>үйк</sub>, N = mg.</div>
+  </div>
+</section>
+
+<!-- 4 -->
+<section class="slide" data-title="Зертхана: ауырлық күші" data-hint="F = mg · g = 10 Н/кг · Жердің центріне бағытталған, денеге түседі">
+  <h2 class="st" style="font-size:28px"><small>І · Виртуалды зертхана</small>Ауырлық күші: F = mg</h2>
+  <div class="def2">Ауырлық күші – Жердің денені тартатын күші. Денеге түседі, Жердің центріне қарай бағытталған. Табиғаты – <b>гравитациялық</b>.</div>
+  <canvas class="lab" id="cG" width="840" height="310"></canvas>
+  <div class="ctlg">
+    <div class="ctl"><div class="lab">Дененің массасы <span class="val" id="gMv"></span></div><input type="range" id="gM" min="1" max="20" step="1" value="2"></div>
+    <div class="row" style="gap:6px;flex:none" id="gP"><button class="btn on" data-p="0">Жер</button><button class="btn" data-p="1">Ай</button><button class="btn" data-p="2">Марс</button><button class="btn" data-p="3">Юпитер</button></div>
+  </div>
+  <div class="qgrid" id="qG"></div>
+</section>
+
+<!-- 5 -->
+<section class="slide" data-title="Зертхана: серпімділік күші" data-hint="F = kx (Гук заңы) · k – қатаңдық, Н/м · x – созылу, м">
+  <h2 class="st" style="font-size:28px"><small>ІІ · Виртуалды зертхана</small>Серпімділік күші: Гук заңы F = kx</h2>
+  <div class="def2">Серпімділік күші дене <b>деформацияланғанда</b> пайда болады және бастапқы пішінге қайтаруға тырысады. Табиғаты – <b>электромагниттік</b>: молекулалардың өзара әрекеттесуі.</div>
+  <canvas class="lab" id="cH" width="840" height="320"></canvas>
+  <div class="ctlg">
+    <div class="ctl"><div class="lab">Ілінген жүк <span class="val" id="hMv"></span></div><input type="range" id="hM" min="0" max="5" step="1" value="2"></div>
+    <div class="row" style="gap:6px;flex:none" id="hK"><span style="align-self:center;font-size:15px;color:var(--muted)">k:</span><button class="btn" data-k="100">100 Н/м</button><button class="btn on" data-k="200">200 Н/м</button><button class="btn" data-k="400">400 Н/м</button></div>
+  </div>
+  <div class="qgrid" id="qH"></div>
+</section>
+
+<!-- 6 -->
+<section class="slide" data-title="Зертхана: үйкеліс күші" data-hint="F = μN · Көлденең бетте N = mg · Қозғалысқа қарсы бағытталған">
+  <h2 class="st" style="font-size:28px"><small>ІІІ · Виртуалды зертхана</small>Үйкеліс күші: F = μN</h2>
+  <canvas class="lab" id="cF" width="840" height="330"></canvas>
+  <div class="ctlg">
+    <div class="ctl"><div class="lab">Тарту күші <span class="val" id="fTv"></span></div><input type="range" id="fT" min="0" max="80" step="1" value="0"></div>
+    <div class="ctl"><div class="lab">Масса <span class="val" id="fMv"></span></div><input type="range" id="fM" min="1" max="10" step="1" value="5"></div>
+    <div class="row" style="gap:6px;flex:none" id="fS"><button class="btn" data-s="0.1">Мұз</button><button class="btn on" data-s="0.3">Ағаш</button><button class="btn" data-s="0.7">Асфальт</button></div>
+    <button class="btn main" id="fEq" style="flex:none">⚖ F = μN</button>
+  </div>
+  <div class="tip" style="font-size:16px">Үйкелістің 3 түрі: <b>тыныштық</b>, <b>сырғанау</b>, <b>домалау</b>. Табиғаты – <b>электромагниттік</b>: жанасқан беттердің кедір-бұдырлары мен молекулаларының әрекеттесуі.</div>
+  <div class="qgrid" id="qF"></div>
+</section>
+
+<!-- 7 -->
+<section class="slide" data-title="Үш күшті салыстыру" data-hint="Жасушаны басып, жауапты аш. Алдымен оқушы айтсын!">
+  <h2 class="st"><small>Жүйелейміз</small>Үш күшті салыстырайық <span style="font:15px 'Segoe UI';color:var(--muted)">(сұрақ белгісін басыңыз)</span></h2>
+  <table class="t cmp" id="cmpT">
+    <tr><th></th><th>Ауырлық күші</th><th>Серпімділік күші</th><th>Үйкеліс күші</th></tr>
+    <tr><td class="l"><b>Формуласы</b></td><td class="rv"><b>F = mg</b></td><td class="rv"><b>F = kx</b></td><td class="rv"><b>F = μN</b></td></tr>
+    <tr><td class="l"><b>Табиғаты</b></td><td class="rv">гравитациялық</td><td class="rv">электромагниттік</td><td class="rv">электромагниттік</td></tr>
+    <tr><td class="l"><b>Қашан пайда болады?</b></td><td class="rv">Дене мен Жер өзара тартылады</td><td class="rv">Дене деформацияланғанда</td><td class="rv">Жанасқан беттер бір-біріне қатысты қозғалғанда не қозғалуға тырысқанда</td></tr>
+    <tr><td class="l"><b>Бағыты</b></td><td class="rv">Жердің центріне қарай</td><td class="rv">Деформацияға қарсы</td><td class="rv">Қозғалысқа қарсы</td></tr>
+    <tr><td class="l"><b>Неге тәуелді?</b></td><td class="rv">Массаға, g-ға</td><td class="rv">Қатаңдыққа, созылуға</td><td class="rv">μ-ге және N-ге</td></tr>
+  </table>
+  <div class="row" style="gap:8px"><button class="btn main" id="cmpAll">Бәрін ашу</button><button class="btn" id="cmpHide">↺ Бәрін жабу</button></div>
+</section>
+
+<!-- 8 -->
+<section class="slide" data-title="Сұрыптау: қай күш?" data-hint="Жағдаятта негізгі рөлді қай күш атқарады?">
+  <h2 class="st"><small>Бекіту · оқушы тақтаға шығады</small>Мұнда негізгі рөлді қай күш атқарады?</h2>
+  <div class="srt" id="srt"></div>
+  <div class="fbox" id="srtR" style="font-size:20px"></div>
+</section>
+
+<!-- 9 -->
+<section class="slide" data-title="Есеп шығару үлгілері" data-hint="Берілгені → ХБЖ → формула → есептеу → жауап. g = 10 Н/кг">
+  <h2 class="st"><small>Бірге шығарамыз</small>Есеп шығару үлгілері <span style="font:15px 'Segoe UI';color:var(--muted)">(шешімін ашу үшін басыңыз)</span></h2>
+  <div class="egrid">
+    <div class="exm"><div class="et"><span class="en">1</span>Массасы 3 кг денеге әсер ететін ауырлық күші қандай?</div><div class="sl">F = mg = 3 · 10 = <b>30 Н</b></div></div>
+    <div class="exm"><div class="et"><span class="en">2</span>Қатаңдығы 500 Н/м серіппе 2 см-ге созылды. Серпімділік күші қандай?</div><div class="sl">x = 2 см = 0,02 м<br>F = kx = 500 · 0,02 = <b>10 Н</b></div></div>
+    <div class="exm"><div class="et"><span class="en">3</span>Массасы 10 кг жәшік көлденең бетте бірқалыпты сүйретіледі, μ = 0,2. Үйкеліс күші қандай?</div><div class="sl">N = mg = 10 · 10 = 100 Н<br>F = μN = 0,2 · 100 = <b>20 Н</b></div></div>
+    <div class="exm"><div class="et"><span class="en">4</span>Қатаңдығы 300 Н/м серіппеге 12 Н күш әсер етті. Ол неше сантиметрге созылады?</div><div class="sl">x = F / k = 12 / 300 = 0,04 м = <b>4 см</b></div></div>
+  </div>
+</section>
+
+<!-- 10 -->
+<section class="slide" data-title="ФС: қысқы жол" data-hint="s = v² / (2μg) · 72 км/сағ = 20 м/с · g = 10 м/с²">
+  <h2 class="st" style="font-size:28px"><small>Функционалдық сауаттылық · үйкеліс</small>Қысқы жол</h2>
+  <div class="card sit">Көлік <b>72 км/сағ</b> жылдамдықпен келе жатыр. Алдағы жаяу жүргінші өткеліне <b>50 м</b> қалғанда жүргізуші тежегішті басты. Құрғақ асфальтта μ = 0,7, тайғақ мұзда μ = 0,1. Тежелу жолы: <b>s = v² / (2μg)</b>.</div>
+  <canvas class="lab" id="cRoad" width="840" height="230"></canvas>
+  <div class="row" style="gap:8px"><button class="btn main" id="roGo">🛑 Тежеу</button><button class="btn" id="roRe">↺ Басынан</button></div>
+  <div class="qgrid" id="qRoad"></div>
+</section>
+
+<!-- 11 -->
+<section class="slide" data-title="ФС: автокөлік серіппелері" data-hint="F = mg · Жүктеме 4 серіппеге бөлінеді · x = F / k">
+  <h2 class="st" style="font-size:28px"><small>Функционалдық сауаттылық · серпімділік</small>Көлік неге отырып қалады?</h2>
+  <div class="card sit">Жеңіл көліктің 4 доңғалағының әрқайсысында қатаңдығы <b>25 000 Н/м</b> серіппе бар. Көлікке әрқайсысы <b>80 кг</b> болатын 5 адам отырды. Жүктеме төрт серіппеге тең бөлінеді деп алайық.</div>
+  <canvas class="lab" id="cSp" width="840" height="230"></canvas>
+  <div class="ctl"><div class="lab">Жолаушылар саны <span class="val" id="spNv"></span></div><input type="range" id="spN" min="0" max="5" step="1" value="0"></div>
+  <div class="qgrid" id="qSp"></div>
+</section>
+
+<!-- 12 -->
+<section class="slide" data-title="ФС: шкафты жылжыту" data-hint="F = μN · Домалау үйкелісі сырғанау үйкелісінен әлдеқайда аз">
+  <h2 class="st" style="font-size:28px"><small>Функционалдық сауаттылық · үйкеліс</small>Шкафты қалай оңай жылжытамыз?</h2>
+  <div class="card sit">Массасы <b>60 кг</b> шкафты еденмен бірқалыпты жылжыту керек. Еденмен тікелей сырғанағанда μ = <b>0,3</b>. Астына дөңгелекті тұғыр қойсақ, μ = <b>0,02</b>. Тұғырдың массасын ескермейміз.</div>
+  <canvas class="lab" id="cCab" width="840" height="230"></canvas>
+  <div class="row" style="gap:8px" id="caB"><button class="btn on" data-w="0">Дөңгелексіз</button><button class="btn" data-w="1">Дөңгелекпен</button></div>
+  <div class="qgrid" id="qCab"></div>
+</section>
+
+<!-- 13 -->
+<section class="slide" data-title="Деңгейлік тапсырмалар" data-hint="A – 4 балл, B – 8 балл, C – 8 балл. Барлығы 20 балл. g = 10 Н/кг">
+  <h2 class="st"><small>Деңгейлік тапсырмалар · 20 балл</small>Жеке жұмыс</h2>
+  <div class="who">Оқушы: <select id="tkWho"></select><button class="btn" id="tkPrev">◀</button><button class="btn" id="tkNext">▶</button><span class="score" id="tkScore"></span></div>
+  <div class="row" style="gap:8px" id="lvTabs"><button class="btn on" data-v="A">A деңгей · 4 балл</button><button class="btn" data-v="B">B деңгей · 8 балл</button><button class="btn" data-v="C">C деңгей · 8 балл</button></div>
+  <div class="lvp" data-p="A">
+    <div class="tq"><div class="lv lvA">A1</div><div class="qt">Массасы 2 кг дененің ауырлық күші қандай?</div><div class="ans"><div class="ai">F = <input data-q="A1"> Н <span class="r"></span></div></div></div>
+    <div class="tq"><div class="lv lvA">A2</div><div class="qt">Қатаңдығы 200 Н/м серіппе 4 см-ге созылды. Серпімділік күші қандай?</div><div class="ans"><div class="ai">F = <input data-q="A2"> Н <span class="r"></span></div></div></div>
+    <div class="tq"><div class="lv lvA">A3</div><div class="qt">Массасы 5 кг білеуше көлденең бетте бірқалыпты сүйретіледі, μ = 0,3. Үйкеліс күші қандай?</div><div class="ans"><div class="ai">F = <input data-q="A3"> Н <span class="r"></span></div></div></div>
+    <div class="tq"><div class="lv lvA">A4</div><div class="qt">Массасы 500 г кітапқа әсер ететін ауырлық күші қандай?</div><div class="ans"><div class="ai">F = <input data-q="A4"> Н <span class="r"></span></div></div></div>
+  </div>
+  <div class="lvp" data-p="B" style="display:none">
+    <div class="tq"><div class="lv lvB">B1</div><div class="qt">Денеге әсер ететін ауырлық күші 600 Н. Оның массасы қандай? (2 балл)</div><div class="ans"><div class="ai">m = <input data-q="B1"> кг <span class="r"></span></div></div></div>
+    <div class="tq"><div class="lv lvB">B2</div><div class="qt">30 Н күштің әсерінен серіппе 6 см-ге созылды. Серіппенің қатаңдығы қандай? (2 балл)</div><div class="ans"><div class="ai">k = <input data-q="B2"> Н/м <span class="r"></span></div></div></div>
+    <div class="tq"><div class="lv lvB">B3</div><div class="qt">Массасы 20 кг жәшікті бірқалыпты сүйреу үшін 40 Н күш керек. Үйкеліс коэффициенті қандай? (2 балл)</div><div class="ans"><div class="ai">μ = <input data-q="B3"> <span class="r"></span></div></div></div>
+    <div class="tq"><div class="lv lvB">B4</div><div class="qt">Айда g = 1,6 Н/кг. Массасы 50 кг ғарышкерге Айда әсер ететін ауырлық күші қандай? (2 балл)</div><div class="ans"><div class="ai">F = <input data-q="B4"> Н <span class="r"></span></div></div></div>
+  </div>
+  <div class="lvp" data-p="C" style="display:none">
+    <div class="tq"><div class="lv lvC">C1</div><div class="qt">Серіппеге 2 кг жүк ілгенде, ол 5 см-ге созылды. а) Серіппенің қатаңдығын тап. ә) 3 кг жүк ілгенде неше сантиметрге созылады? (4 балл)</div><div class="ans"><div class="ai">k = <input data-q="C1"> Н/м <span class="r"></span></div><div class="ai">x = <input data-q="C2"> см <span class="r"></span></div></div></div>
+    <div class="tq"><div class="lv lvC">C2</div><div class="qt">Массасы 40 кг шана мұзда бірқалыпты сүйретіледі, μ = 0,05. а) Тарту күшін тап. ә) Шанаға 20 кг бала отырды. Енді бірқалыпты сүйреу үшін қандай күш керек? (4 балл)</div><div class="ans"><div class="ai">F₁ = <input data-q="C3"> Н <span class="r"></span></div><div class="ai">F₂ = <input data-q="C4"> Н <span class="r"></span></div></div></div>
+  </div>
+  <div class="tip" style="font-size:15px">Жауапты жазып, <b>Enter</b> немесе <b>✓</b> бас. Әр сұраққа 2 мүмкіндік: бірінші реттен дұрыс – толық балл, екінші реттен – жартысы. Бөлшекті үтірмен жаз. g = 10 Н/кг.</div>
+</section>
+
+<!-- 14 -->
+<section class="slide nofit" data-title="Бағалау парағы" data-wide="1">
+  <h2 class="st"><small>Жеке жұмыс нәтижесі</small>Кім қанша балл жинады?</h2>
+  <div class="gwrap">
+    <div class="gtab"><table class="t" id="grTab"></table></div>
+    <div class="col">
+      <div class="sum"><div style="border-top:5px solid var(--green)"><b id="g1">0</b>18–20</div><div style="border-top:5px solid var(--blue)"><b id="g2">0</b>14–17</div><div style="border-top:5px solid var(--yellow)"><b id="g3">0</b>9–13</div><div style="border-top:5px solid var(--red)"><b id="g4">0</b>0–8</div></div>
+      <div class="card col" style="flex:1;min-height:0"><h3>Сынып тізімі (әр жолға бір оқушы)</h3>
+        <textarea class="roster" id="roster" spellcheck="false"></textarea>
+        <div style="display:flex;gap:6px"><button class="btn main" id="rsSave">Тізімді сақтау</button><button class="btn" id="grClr">Нәтижелерді тазалау</button></div></div>
+      <div style="font-size:13.5px;color:var(--muted)">Баға: 18–20 балл – «5», 14–17 – «4», 9–13 – «3», 0–8 – «2».</div>
+    </div>
+  </div>
+</section>
+
+<!-- 15 -->
+<section class="slide nofit" id="slRace" data-wide="1" data-title="Көлік жарысы" data-hint="">
+  <div class="rcw"><div id="rcTop"></div><canvas class="lab" id="cRace" width="1540" height="540"></canvas><div id="rcBot"></div></div>
+</section>
+
+<!-- 16 -->
+<section class="slide" data-title="Қорытынды және үй тапсырмасы" data-hint="3 – күш; 2 – формула; 1 – сұрақ">
+  <h2 class="st"><small>Қорытынды</small>Есте сақтайық</h2>
+  <div class="duo"><div class="pa">
+  <div class="row">
+    <div class="card grow"><h3>Ауырлық</h3><div style="font:25px 'Cambria Math',serif">F = mg</div><div style="font-size:15px;color:var(--muted)">гравитациялық</div></div>
+    <div class="card grow"><h3>Серпімділік</h3><div style="font:25px 'Cambria Math',serif">F = kx</div><div style="font-size:15px;color:var(--muted)">электромагниттік</div></div>
+    <div class="card grow"><h3>Үйкеліс</h3><div style="font:25px 'Cambria Math',serif">F = μN</div><div style="font-size:15px;color:var(--muted)">электромагниттік</div></div>
+  </div>
+  <div class="card" style="font-size:18px;line-height:1.5"><h3>Рефлексия «3–2–1»</h3><b>3</b> – бүгін білген күш; <b>2</b> – есте қалған формула; <b>1</b> – әлі түсініксіз сұрақ.</div>
+  </div><div class="pb">
+  <div class="card"><h3>Үй тапсырмасы</h3>
+    <ol style="margin:0;padding-left:22px;font-size:18px;line-height:1.6">
+      <li>Оқулықтағы тақырыпты оқу, үш күштің формуласы мен бағытын кестеге жазу.</li>
+      <li><b>Есеп:</b> массасы 4 кг жүк ілінген серіппе 8 см-ге созылды. Серіппенің қатаңдығын тап.</li>
+      <li><b>Функционалдық тапсырма:</b> аяқ киімнің табанын көріп, тайғақ жерде қайсысы қауіпсіз екенін үйкеліс арқылы түсіндір.</li>
+      <li>Келесі сабаққа дайындық: Практикалық жұмыс №2 «Сырғанау үйкеліс коэффициентін анықтау».</li>
+    </ol></div>
+</div></div>
+</section>
+
+    </div>
+    <div class="rightw" id="rightw">
+      <div class="grip" id="grip">⇢ тақтаны жылжыт</div>
+      <div class="board">
+        <div class="tools">
+          <button class="sw on" data-c="#f2efe2" style="background:#f2efe2" title="Бор"></button>
+          <button class="sw" data-c="#ffd75e" style="background:#ffd75e" title="Сары"></button>
+          <button class="sw" data-c="#ff8fa3" style="background:#ff8fa3" title="Қызғылт"></button>
+          <button class="sw" data-c="#7fd8ff" style="background:#7fd8ff" title="Көгілдір"></button>
+          <button class="sw" data-c="#9be37f" style="background:#9be37f" title="Жасыл"></button>
+          <button class="tb" data-w="2.2">жіңішке</button><button class="tb on" data-w="3.6">орташа</button><button class="tb" data-w="6.5">жуан</button>
+          <span class="gapx"></span>
+          <button class="tb" id="erase">⌫ өшір</button><button class="tb" id="undo" title="Ctrl+Z">↶</button><button class="tb" id="wipe">тазалау</button><button class="tb" id="hideB" title="Тақтаны жасыру (T)">✕</button>
+        </div>
+        <div class="bhint" id="bhint"></div>
+        <canvas id="ink"></canvas>
+      </div>
+    </div>
+  </div>
+  <div class="btab" id="btab">✎ ТАҚТА</div>
+  <div class="bottom">
+    <button class="btn" id="prev">◀ Артқа</button><div class="dots" id="dots"></div><button class="btn main" id="next">Келесі ▶</button>
+    <span class="cnt" id="cnt"></span><button class="btn" id="zm" title="Тапсырманы үлкейту (Z)">🔍 Жақындату</button><button class="btn" id="snd">🔊</button>
+  </div>
+  <div class="toast" id="toast"></div>
+  <div class="phov" id="phOv" style="display:none"><div class="phbox"><button class="zx" id="phClose" style="top:10px;right:10px;position:absolute;width:48px;height:48px;font-size:22px">✕</button><h3 style="margin:0;font:700 30px Georgia,serif">Кешіккендер: QR-ды сканерле</h3><div class="qrb" data-qr style="width:460px;height:460px"></div><div data-url style="font:700 18px Consolas,monospace;color:var(--blue)"></div><div class="nmg" id="phOvN" style="justify-content:center"></div></div></div>
+  <div class="zov" id="zov"><div class="zwrap" id="zWrap"></div><button class="zx" id="zx" title="Жабу (Esc)">✕</button><div class="zhint">Жабу: ✕, Esc немесе бос жерді басу</div></div>
+</div>
+
+<script src="qrcode.min.js"></script>
+<script src="mqtt.min.js"></script>
+<script src="net.js"></script>
+<script>
+"use strict";
+const $=id=>document.getElementById(id);
+const nf=(v,d=4)=>{ if(!isFinite(v)) return '—'; let s=String(+v.toFixed(d)); if(s.includes('e')) return s; return s.replace('.',','); };
+const g1=v=>(Math.round(v*10)/10).toFixed(1).replace('.',',');
+let toastT; function toast(m){ const t=$('toast'); t.textContent=m; t.classList.add('show'); clearTimeout(toastT); toastT=setTimeout(()=>t.classList.remove('show'),2600); }
+const store={ get(k,d){ try{ const v=localStorage.getItem(k); return v?JSON.parse(v):d; }catch(e){ return d; } }, set(k,v){ try{ localStorage.setItem(k,JSON.stringify(v)); }catch(e){} } };
+function parseNum(s){ s=String(s).trim().replace(/\s/g,'').replace(/,/g,'.').replace(/[×x*]/g,'·').replace(/−/g,'-');
+  if(s==='') return NaN;
+  let m=/^(-?[\d.]+)·10\^?\(?(-?\d+)\)?$/.exec(s); if(m) return Number(m[1])*Math.pow(10,+m[2]);
+  m=/^10\^\(?(-?\d+)\)?$/.exec(s); if(m) return Math.pow(10,+m[1]);
+  return Number(s); }
+const near=(a,b)=>Math.abs(a-b)<=Math.max(1e-9,Math.abs(b)*1e-6);
+function shuffle(a){ a=a.slice(); for(let i=a.length-1;i>0;i--){ const j=Math.floor(Math.random()*(i+1)); [a[i],a[j]]=[a[j],a[i]]; } return a; }
+
+/* ---------- дыбыс ---------- */
+const SND=(()=>{ let ac=null,on=store.get('ku_snd',true);
+  function init(){ if(ac){ if(ac.state==='suspended') ac.resume(); return; } const C=window.AudioContext||window.webkitAudioContext; if(C) ac=new C(); }
+  function tone(f,d,vol=.15,at=0,type='sine'){ if(!ac||!on) return; const t=ac.currentTime+at,o=ac.createOscillator(),g=ac.createGain();
+    o.type=type; o.frequency.value=f; g.gain.setValueAtTime(.0001,t); g.gain.exponentialRampToValueAtTime(vol,t+.01); g.gain.exponentialRampToValueAtTime(.0001,t+d); o.connect(g); g.connect(ac.destination); o.start(t); o.stop(t+d+.02); }
+  return { init, get on(){return on;}, toggle(){ on=!on; store.set('ku_snd',on); return on; },
+    ok(){ tone(660,.14); tone(990,.25,.15,.11); }, bad(){ tone(190,.3,.08,0,'square'); }, page(){ tone(520,.07,.04); },
+    clink(){ tone(2100,.08,.06); tone(2900,.06,.03,.02); }, beep(){ tone(1046,.12,.12); },
+    spin(){ tone(700+Math.random()*500,.05,.05); },
+    bell(){ [784,988,1175,1568].forEach((f,i)=>tone(f,.35,.14,i*.16)); } };
+})();
+document.addEventListener('pointerdown',()=>SND.init(),{capture:true});
+/* ---------- сурет көмекшілері ---------- */
+function rr(ctx,x,y,w,h,r){ ctx.beginPath(); ctx.moveTo(x+r,y); ctx.arcTo(x+w,y,x+w,y+h,r); ctx.arcTo(x+w,y+h,x,y+h,r); ctx.arcTo(x,y+h,x,y,r); ctx.arcTo(x,y,x+w,y,r); ctx.closePath(); }
+function label(ctx,t,x,y,col='#1d2430',size=13,align='center',bold=false,font='Segoe UI, sans-serif'){ ctx.fillStyle=col; ctx.font=(bold?'700 ':'')+size+'px '+font; ctx.textAlign=align; ctx.fillText(t,x,y); ctx.textAlign='left'; }
+function table_(ctx,w,h,y){ ctx.fillStyle='#b98a5a'; ctx.fillRect(0,y,w,h-y); ctx.fillStyle='#a3774a'; ctx.fillRect(0,y,w,6); ctx.strokeStyle='rgba(0,0,0,.08)'; for(let x=30;x<w;x+=90){ ctx.beginPath(); ctx.moveTo(x,y+10); ctx.lineTo(x+40,h); ctx.stroke(); } }
+const LABS={};
+let TT=0;
+
+/* ---------- ортақ көмекшілер ---------- */
+const grp=n=>String(Math.round(n)).replace('-','−').replace(/\B(?=(\d{3})+(?!\d))/g,' ');
+function arrow(ctx,x1,y1,x2,y2,col,w=4,hd=12){ const a=Math.atan2(y2-y1,x2-x1); ctx.strokeStyle=col; ctx.fillStyle=col; ctx.lineWidth=w;
+  ctx.beginPath(); ctx.moveTo(x1,y1); ctx.lineTo(x2-Math.cos(a)*hd*.8,y2-Math.sin(a)*hd*.8); ctx.stroke();
+  ctx.beginPath(); ctx.moveTo(x2,y2); ctx.lineTo(x2-Math.cos(a-.42)*hd,y2-Math.sin(a-.42)*hd); ctx.lineTo(x2-Math.cos(a+.42)*hd,y2-Math.sin(a+.42)*hd); ctx.closePath(); ctx.fill(); }
+function dim(ctx,x,y1,y2,t,col='#1d2430'){ ctx.strokeStyle=col; ctx.lineWidth=1.5; ctx.beginPath(); ctx.moveTo(x,y1); ctx.lineTo(x,y2); ctx.stroke();
+  for(const [y,s] of [[y1,1],[y2,-1]]){ const d=Math.sign(y2-y1)*s*7; ctx.beginPath(); ctx.moveTo(x-5,y+d); ctx.lineTo(x,y); ctx.lineTo(x+5,y+d); ctx.stroke(); ctx.beginPath(); ctx.moveTo(x-9,y); ctx.lineTo(x+9,y); ctx.stroke(); }
+  label(ctx,t,x-8,(y1+y2)/2+6,col,17,'right',true,'Georgia, serif'); }
+function molMake(n){ return Array.from({length:n},()=>({u:Math.random(),v:Math.random(),a:Math.random()*6.283})); }
+function molStep(M,dt,sp){ for(const m of M){ m.a+=(Math.random()-.5)*.7; m.u+=Math.cos(m.a)*sp*dt; m.v+=Math.sin(m.a)*sp*dt;
+  if(m.u<0){ m.u=-m.u; m.a=Math.PI-m.a; } if(m.u>1){ m.u=2-m.u; m.a=Math.PI-m.a; } if(m.v<0){ m.v=-m.v; m.a=-m.a; } if(m.v>1){ m.v=2-m.v; m.a=-m.a; } } }
+function molDraw(ctx,M,x,y,w,h,col,r=3){ if(h<2*r) return; ctx.fillStyle=col; for(const m of M){ ctx.beginPath(); ctx.arc(x+r+m.u*(w-2*r),y+r+m.v*(h-2*r),r,0,7); ctx.fill(); } }
+function flame(ctx,x,y,t,s=1){ for(const [c,k] of [['#e0662f',1],['#ffcf4a',.6]]){ ctx.fillStyle=c; ctx.beginPath(); for(let i=-2;i<=2;i++){ const fx=x+i*11*s, fh=(26+8*Math.sin(t*14+i*1.7))*s*k;
+  ctx.moveTo(fx-7*s*k,y); ctx.quadraticCurveTo(fx-6*s*k,y-fh*.5,fx,y-fh); ctx.quadraticCurveTo(fx+6*s*k,y-fh*.5,fx+7*s*k,y); } ctx.fill(); } }
+function mixc(a,b,k){ return a.map((v,i)=>Math.round(v+(b[i]-v)*k)).join(','); }
+function thermo(ctx,x,y1,y2,k,txt){ k=Math.max(0,Math.min(1,k)); ctx.fillStyle='#fff'; rr(ctx,x-9,y1,18,y2-y1,9); ctx.fill(); ctx.strokeStyle='#8d939a'; ctx.lineWidth=1.5; ctx.stroke();
+  ctx.fillStyle='#c8352b'; ctx.beginPath(); ctx.arc(x,y2+8,14,0,7); ctx.fill(); ctx.fillRect(x-4,y2-(y2-y1-12)*k,8,(y2-y1-12)*k+8);
+  for(let i=0;i<=8;i++){ const y=y2-(y2-y1-12)*i/8; ctx.strokeStyle='#8d939a'; ctx.lineWidth=1; ctx.beginPath(); ctx.moveTo(x+9,y); ctx.lineTo(x+14,y); ctx.stroke(); }
+  if(txt) label(ctx,txt,x,y1-10,'#1d2430',15,'center',true); }
+
+/* ---------- тексерілетін сұрақ (2 мүмкіндік) ---------- */
+function mkQ(box,o,i,cb){ const d=document.createElement('div'); d.className='qk';
+  d.innerHTML=`<div class="qn">${o.n||('Сұрақ '+(i+1))}</div><div class="qt">${o.q}</div><div class="qa"></div><div class="qr"></div>`; box.appendChild(d);
+  const qa=d.querySelector('.qa'), qr=d.querySelector('.qr'); let left=2, done=false;
+  const show=o.show||(o.ch?o.ch[o.a]:nf(o.a,6)+' '+(o.unit||''));
+  function fin(ok){ done=true; d.classList.add(ok?'good':'fail'); qa.querySelectorAll('input,button').forEach(x=>x.disabled=true);
+    if(o.ch) qa.querySelectorAll('.ch').forEach((b,j)=>{ if(j===o.a) b.classList.add('ok'); });
+    qr.innerHTML=(ok?'<span class="good">✔ Дұрыс!</span>':'<span class="bad">✘ Дұрыс жауабы: '+show+'</span>')+(o.sol?'<span class="sol">'+o.sol+'</span>':''); fitSlide(slides[cur]); if(cb) cb(ok); }
+  function miss(){ left--; SND.bad(); if(left<=0) fin(false); else qr.innerHTML='<span class="bad">✘ Қате, тағы 1 мүмкіндік.</span>'+(o.hint?' <span style="color:var(--muted)">Кеңес: '+o.hint+'</span>':''); }
+  if(o.ch) o.ch.forEach((t,j)=>{ const b=document.createElement('button'); b.className='ch'; b.innerHTML=t;
+    b.onclick=()=>{ if(done) return; if(j===o.a){ SND.ok(); fin(true); } else { b.classList.add('no'); b.disabled=true; miss(); } }; qa.appendChild(b); });
+  else { qa.innerHTML=(o.pre?'<span>'+o.pre+'</span>':'')+'<input placeholder="?">'+(o.unit?'<span>'+o.unit+'</span>':'')+'<button class="btn main">Тексеру</button>';
+    const inp=qa.querySelector('input'), check=()=>{ if(done) return; const v=parseNum(inp.value); if(!isFinite(v)){ toast('Санды жаз'); return; }
+      if(Math.abs(v-o.a)<=Math.abs(o.a)*(o.tol||.01)+1e-9){ SND.ok(); fin(true); } else { miss(); inp.select(); } };
+    qa.querySelector('button').onclick=check; inp.addEventListener('keydown',e=>{ if(e.key==='Enter') check(); }); }
+  return d; }
+
+/* ---------- механикадағы күштер: зертханалар ---------- */
+const COLG='#1f5fa8', COLS='#2e7d4f', COLU='#c8352b', COLN='#7a4fb0', fx1=(v,d=1)=>String(+(+v).toFixed(d)).replace('.',',').replace('-','−');
+const exmBind=()=>document.querySelectorAll('.exm').forEach(e=>e.onclick=()=>{ e.classList.toggle('open'); SND.clink(); fitSlide(slides[cur]); });
+function vec(ctx,x,y,dx,dy,col,t,lx,ly){ if(Math.abs(dx)+Math.abs(dy)<3) return; arrow(ctx,x,y,x+dx,y+dy,col,5,14); if(t) label(ctx,t,x+dx+(lx||0),y+dy+(ly||0),col,19,'center',true,'Georgia, serif'); }
+function spring(ctx,x,y0,y1,n,w,col,lw){ ctx.strokeStyle=col||'#4a4f57'; ctx.lineWidth=lw||3; ctx.lineJoin='round'; ctx.beginPath(); ctx.moveTo(x,y0); const a=y0+8,b=y1-8; ctx.lineTo(x,a); for(let i=0;i<n;i++){ ctx.lineTo(x+(i%2?-w:w),a+(b-a)*(i+.5)/n); } ctx.lineTo(x,b); ctx.lineTo(x,y1); ctx.stroke(); }
+function hspring(ctx,x0,x1,y,n,h,col){ ctx.strokeStyle=col||'#4a4f57'; ctx.lineWidth=3; ctx.lineJoin='round'; ctx.beginPath(); ctx.moveTo(x0,y); const a=x0+8,b=x1-8; ctx.lineTo(a,y); for(let i=0;i<n;i++) ctx.lineTo(a+(b-a)*(i+.5)/n,y+(i%2?-h:h)); ctx.lineTo(b,y); ctx.lineTo(x1,y); ctx.stroke(); }
+function miniCar(ctx,x,y,c,s,spin){ ctx.save(); ctx.translate(x,y); ctx.scale(s,s); ctx.fillStyle=c; rr(ctx,-60,-12,120,28,10); ctx.fill(); ctx.beginPath(); ctx.moveTo(-34,-12); ctx.quadraticCurveTo(-24,-36,4,-36); ctx.quadraticCurveTo(26,-36,38,-12); ctx.closePath(); ctx.fill(); ctx.fillStyle='#cfe6f4'; ctx.beginPath(); ctx.moveTo(-24,-13); ctx.quadraticCurveTo(-17,-30,1,-30); ctx.lineTo(1,-13); ctx.closePath(); ctx.fill(); ctx.beginPath(); ctx.moveTo(6,-13); ctx.lineTo(6,-30); ctx.quadraticCurveTo(20,-29,29,-13); ctx.closePath(); ctx.fill(); for(const wx of [-34,36]){ ctx.save(); ctx.translate(wx,14); ctx.fillStyle='#22262b'; ctx.beginPath(); ctx.arc(0,0,13,0,7); ctx.fill(); ctx.rotate(spin||0); ctx.fillStyle='#c3c8ce'; ctx.fillRect(-7,-2,14,4); ctx.restore(); } ctx.restore(); }
+
+/* 1. Кіріспе */
+const TI={t:0};
+LABS.cTitle={frame(ctx,w,h,dt){ TI.t+=dt; const t=TI.t; ctx.fillStyle='#efe9da'; ctx.fillRect(0,0,w,h);
+  /* алма */ const f=(t%2.4)/2.4, ay=48+Math.min(1,f*1.25)**2*170; ctx.fillStyle='#6d8f4a'; ctx.beginPath(); ctx.ellipse(70,28,70,24,0,0,7); ctx.fill(); ctx.fillStyle='#c8352b'; ctx.beginPath(); ctx.arc(100,ay,14,0,7); ctx.fill(); ctx.fillStyle='#b98a5a'; ctx.fillRect(0,232,270,6); vec(ctx,100,ay,0,48,COLG,'',0,0); label(ctx,'F = mg',100,268,COLG,24,'center',true,'Georgia, serif'); label(ctx,'Ауырлық күші',135,292,'#1d2430',15,'center',true);
+  /* серіппе */ const x0=420, yb=128+Math.sin(t*2.4)*30; ctx.fillStyle='#6d737b'; ctx.fillRect(x0-50,18,100,8); spring(ctx,x0,26,yb,12,16); ctx.fillStyle='#4a4f57'; rr(ctx,x0-24,yb,48,44,5); ctx.fill(); vec(ctx,x0+38,yb+20,0,-(yb-90)*1.1,COLS,'',0,0); label(ctx,'F = kx',x0,268,COLS,24,'center',true,'Georgia, serif'); label(ctx,'Серпімділік күші',x0,292,'#1d2430',15,'center',true);
+  /* білеуше */ const o=(t*30)%60, bx=655; ctx.fillStyle='#b98a5a'; ctx.fillRect(570,200,270,38); ctx.strokeStyle='rgba(0,0,0,.2)'; ctx.lineWidth=2; for(let x=570-o;x<840;x+=30){ if(x>=570){ ctx.beginPath(); ctx.moveTo(x,200); ctx.lineTo(x+10,212); ctx.stroke(); } } ctx.fillStyle='#8d5f35'; rr(ctx,bx-40,150,90,50,5); ctx.fill(); vec(ctx,bx+50,175,64,0,COLS,'',0,0); vec(ctx,bx-40,194,-62,0,COLU,'',0,0); label(ctx,'F = μN',705,268,COLU,24,'center',true,'Georgia, serif'); label(ctx,'Үйкеліс күші',705,292,'#1d2430',15,'center',true); }};
+
+/* 2. Иә / жоқ */
+const YN=[['Инерциялық жүйеде ΣF = 0 болса, дене тыныштықта не бірқалыпты қозғалады.',1,''],['Бұрылыстағы карусель – инерциялық жүйе.',0,'Карусель үдеумен қозғалады.'],['Масса – инерттілік өлшемі.',1,''],['Тұрақты жылдамдықпен түскен парашютшіге күш әсер етпейді.',0,'Күштер әсер етеді, бірақ теңгерілген.'],['Жер – жуық шамада инерциялық жүйе.',1,'']];
+(()=>{ const box=$('yn'); let dn=0,ok=0; const res=()=>{ $('ynR').innerHTML=`Жауап берілді: <b>${dn} / 5</b> · дұрыс: <b>${ok}</b>`; };
+  YN.forEach(([t,a,why],i)=>{ const d=document.createElement('div'); d.className='yni'; d.innerHTML=`<span>${i+1}) ${t}</span><div><button class="btn">Иә</button><button class="btn">Жоқ</button></div><em></em>`; const bs=d.querySelectorAll('button');
+    bs.forEach((b,j)=>b.onclick=()=>{ bs.forEach(x=>x.disabled=true); dn++; const g=(j===0)===!!a; if(g){ ok++; SND.ok(); d.classList.add('ok'); } else { SND.bad(); d.classList.add('no'); } d.querySelector('em').textContent=(a?'Иә. ':'Жоқ. ')+why; res(); fitSlide(slides[cur]); }); box.appendChild(d); }); res(); })();
+
+/* 3. Білеушедегі күштер */
+const FB={g:0,n:0,t:0,u:0,o:0};
+const fbUi=()=>document.querySelectorAll('#fbB [data-f]').forEach(b=>b.classList.toggle('on',!!FB[b.dataset.f]));
+document.querySelectorAll('#fbB [data-f]').forEach(b=>b.onclick=()=>{ FB[b.dataset.f]=FB[b.dataset.f]?0:1; fbUi(); SND.clink(); }); $('fbAll').onclick=()=>{ ['g','n','t','u'].forEach(k=>FB[k]=1); fbUi(); SND.clink(); };
+LABS.cFb={frame(ctx,w,h,dt){ FB.o=(FB.o+dt*40)%60; ctx.fillStyle='#efe9da'; ctx.fillRect(0,0,w,h); ctx.fillStyle='#b98a5a'; ctx.fillRect(0,228,w,82); ctx.strokeStyle='rgba(0,0,0,.14)'; ctx.lineWidth=2; for(let x=-FB.o;x<w;x+=60){ ctx.beginPath(); ctx.moveTo(x,228); ctx.lineTo(x+22,260); ctx.stroke(); }
+  const X=340,Y=228,W=150,H=84,cx=X+W/2,cy=Y-H/2; ctx.fillStyle='#8d5f35'; rr(ctx,X,Y-H,W,H,6); ctx.fill(); label(ctx,'v = const',cx,cy+7,'#fff',18,'center',true); ctx.strokeStyle='#4a4f57'; ctx.lineWidth=3; ctx.beginPath(); ctx.moveTo(X+W,cy); ctx.lineTo(w-20,cy); ctx.stroke();
+  if(FB.g) vec(ctx,cx,cy,0,100,COLG,'mg',28,-6); if(FB.n) vec(ctx,cx,Y-H,0,-100,COLN,'N',24,8); if(FB.t) vec(ctx,X+W,cy-1,110,0,COLS,'F тарту',0,-14); if(FB.u) vec(ctx,X,Y-5,-110,0,COLU,'F үйк',0,-14);
+  if(!FB.g&&!FB.n&&!FB.t&&!FB.u) label(ctx,'Төмендегі батырмалармен күштерді бір-бірден көрсет',w/2,60,'#6a6658',19,'center',true); }};
+
+/* 4. Ауырлық күші */
+const GP=[['Жер',10,'#2d6fb0'],['Ай',1.6,'#a7a39a'],['Марс',3.7,'#c0603a'],['Юпитер',24.8,'#c9a26a']]; const GL={p:0};
+$('gM').oninput=()=>{ $('gMv').textContent=$('gM').value+' кг'; }; $('gM').oninput();
+document.querySelectorAll('#gP [data-p]').forEach(b=>b.onclick=()=>{ GL.p=+b.dataset.p; document.querySelectorAll('#gP [data-p]').forEach(x=>x.classList.toggle('on',x===b)); SND.clink(); });
+LABS.cG={frame(ctx,w,h){ const m=+$('gM').value,P=GP[GL.p],F=m*P[1]; ctx.fillStyle='#efe9da'; ctx.fillRect(0,0,w,h);
+  ctx.fillStyle=P[2]; ctx.beginPath(); ctx.arc(150,h+170,240,0,7); ctx.fill(); label(ctx,P[0],150,h-16,'#fff',18,'center',true);
+  const sx=150,L=Math.min(120,F*.3),y1=70+L; ctx.fillStyle='#6d737b'; ctx.fillRect(90,14,120,8); spring(ctx,sx,22,y1,12,14); const sz=26+m*1.6; ctx.fillStyle='#4a4f57'; rr(ctx,sx-sz/2,y1,sz,sz*.8,5); ctx.fill(); label(ctx,m+' кг',sx,y1+sz*.45,'#fff',14,'center',true);
+  vec(ctx,sx,y1+sz*.4,0,Math.min(80,18+F*.2),COLG,'',0,0);
+  label(ctx,`F = ${m} · ${fx1(P[1])} = ${fx1(F)} Н`,445,44,COLG,26,'center',true,'Georgia, serif'); label(ctx,'Сол дене әртүрлі аспан денесінде',565,84,'#6a6658',15,'center',true);
+  const X0=340,MaxW=380; GP.forEach((q,i)=>{ const y=104+i*48,Fq=m*q[1],on=i===GL.p; label(ctx,q[0],X0+64,y+24,'#1d2430',17,'right',on); ctx.fillStyle=on?q[2]:'rgba(0,0,0,.14)'; ctx.fillRect(X0+74,y+4,Math.max(3,Fq/496*MaxW),30); label(ctx,fx1(Fq)+' Н',X0+84+Fq/496*MaxW,y+25,'#1d2430',15,'left',true); label(ctx,'g = '+fx1(q[1]),X0+40,y+40,'#6a6658',11.5,'right'); }); }};
+[{q:'Массасы 3 кг дене Жерде. Ауырлық күші?',pre:'F = ',a:30,unit:'Н',hint:'F = mg',sol:'F = 3 · 10 = 30 Н'},
+ {q:'60 кг адам Айға барды (g = 1,6 Н/кг). Массасы мен ауырлық күші қалай өзгереді?',ch:['Масса сол қалпы, күш 96 Н','Масса да, күш те кемиді','Күш сол қалпы, масса кемиді'],a:0,sol:'Масса – дененің қасиеті, өзгермейді. F = 60 · 1,6 = 96 Н.'}].forEach((o,i)=>mkQ($('qG'),o,i));
+
+/* 5. Гук заңы */
+const HK={k:200,y:0,v:0,M:Array.from({length:10},(_,i)=>i)};
+$('hM').oninput=()=>{ const n=+$('hM').value; $('hMv').textContent=`${n*100} г, F = ${n} Н`; }; $('hM').oninput();
+document.querySelectorAll('#hK [data-k]').forEach(b=>b.onclick=()=>{ HK.k=+b.dataset.k; document.querySelectorAll('#hK [data-k]').forEach(x=>x.classList.toggle('on',x===b)); SND.clink(); });
+LABS.cH={frame(ctx,w,h,dt){ const n=+$('hM').value,F=n,xEq=F/HK.k*100; /* см */ const acc=(xEq-HK.y)*40-HK.v*5; HK.v+=acc*dt; HK.y+=HK.v*dt; const x=Math.max(0,HK.y), PX=19; ctx.fillStyle='#efe9da'; ctx.fillRect(0,0,w,h);
+  const sx=110,y0=20,yN=120,y1=yN+x*PX; ctx.fillStyle='#6d737b'; ctx.fillRect(40,12,150,8); spring(ctx,sx,y0,y1,14,16); ctx.setLineDash([4,4]); ctx.strokeStyle='#8d939a'; ctx.lineWidth=1.5; ctx.beginPath(); ctx.moveTo(sx+24,yN); ctx.lineTo(sx+68,yN); ctx.stroke(); ctx.setLineDash([]);
+  if(n){ for(let i=0;i<n;i++){ ctx.fillStyle=i%2?'#4a4f57':'#5e646d'; rr(ctx,sx-20,y1+i*13,40,12,3); ctx.fill(); } vec(ctx,sx-34,y1+6,0,-Math.max(10,F*14),COLS,'F',-14,10); vec(ctx,sx+34,y1+n*6,0,F*14,COLG,'mg',20,4); }
+  if(x>.05){ arrow(ctx,sx+58,yN,sx+58,y1,'#1d2430',2,8); label(ctx,'x',sx+68,(yN+y1)/2+5,'#1d2430',17,'left',true,'Georgia, serif'); }
+  label(ctx,`F = kx`,275,44,'#b8442f',24,'left',true,'Georgia, serif'); label(ctx,`${fx1(F)} Н = ${HK.k} Н/м · ${fx1(xEq/100,4)} м`,275,74,'#1d2430',17,'left',true); label(ctx,`x = ${fx1(xEq,2)} см`,275,102,COLS,22,'left',true,'Georgia, serif');
+  /* атомдар */ const ax=275,ay=214,sp=26+Math.min(16,x*4); ctx.fillStyle='#fff'; rr(ctx,ax-8,130,210,172,8); ctx.fill(); label(ctx,'Молекулалар арасы артады',ax+97,150,'#6a6658',13,'center',true); for(let i=0;i<4;i++) for(let j=0;j<4;j++){ const px=ax+50-sp*.35+j*26,py=165+i*sp*.9+Math.sin(TT*5+i+j)*1; if(py<296){ ctx.fillStyle='#1f5fa8'; ctx.beginPath(); ctx.arc(px+30,py,7,0,7); ctx.fill(); } }
+  /* график */ const O=[535,285],G=[270,245],X=q=>O[0]+q/5*G[0],Y=q=>O[1]-q/5.5*G[1]; ctx.fillStyle='#fff'; ctx.fillRect(O[0],O[1]-G[1],G[0],G[1]); for(let q=1;q<=5;q++){ ctx.strokeStyle='#e4decd'; ctx.lineWidth=1; ctx.beginPath(); ctx.moveTo(X(q),O[1]); ctx.lineTo(X(q),O[1]-G[1]); ctx.moveTo(O[0],Y(q)); ctx.lineTo(O[0]+G[0],Y(q)); ctx.stroke(); label(ctx,q,X(q),O[1]+16,'#6a6658',12); label(ctx,q,O[0]-5,Y(q)+4,'#6a6658',12,'right'); }
+  [100,200,400].forEach(k=>{ const on=k===HK.k, xm=Math.min(5,500/k); ctx.strokeStyle=on?'#b8442f':'#c9c3b2'; ctx.lineWidth=on?4:2; ctx.beginPath(); ctx.moveTo(X(0),Y(0)); ctx.lineTo(X(xm),Y(k*xm/100)); ctx.stroke(); label(ctx,k,X(xm)+(xm>=5?-14:6),Y(k*xm/100)-6,on?'#b8442f':'#a7a18f',12,'left',true); });
+  ctx.fillStyle='#1d2430'; ctx.beginPath(); ctx.arc(X(xEq),Y(F),6,0,7); ctx.fill(); arrow(ctx,O[0],O[1],O[0],O[1]-G[1]-10,'#1d2430',2,9); arrow(ctx,O[0],O[1],O[0]+G[0]+10,O[1],'#1d2430',2,9); label(ctx,'F, Н',O[0]+6,O[1]-G[1]+2,'#1d2430',13,'left',true); label(ctx,'x, см',O[0]+G[0],O[1]+30,'#1d2430',13,'right',true); }};
+[{q:'Қатаңдығы 200 Н/м серіппе 3 см-ге созылды. F = ?',pre:'F = ',a:6,unit:'Н',hint:'3 см = 0,03 м',sol:'F = 200 · 0,03 = 6 Н'},
+ {q:'Бірдей жүк ілінсе, қай серіппе көп созылады?',ch:['k = 100 Н/м','k = 400 Н/м','Бірдей созылады'],a:0,sol:'x = F / k: қатаңдығы аз серіппе көбірек созылады. Зертханада тексер.'}].forEach((o,i)=>mkQ($('qH'),o,i));
+
+/* 6. Үйкеліс */
+const FR={mu:.3,x:0,v:0,o:0};
+function frUi(){ $('fTv').textContent=$('fT').value+' Н'; $('fMv').textContent=$('fM').value+' кг'; }
+['fT','fM'].forEach(i=>$(i).addEventListener('input',frUi)); frUi();
+document.querySelectorAll('#fS [data-s]').forEach(b=>b.onclick=()=>{ FR.mu=+b.dataset.s; document.querySelectorAll('#fS [data-s]').forEach(x=>x.classList.toggle('on',x===b)); SND.clink(); });
+$('fEq').onclick=()=>{ $('fT').value=Math.round(FR.mu*(+$('fM').value)*10); frUi(); SND.clink(); };
+LABS.cF={frame(ctx,w,h,dt){ const m=+$('fM').value,T=+$('fT').value,N=m*10,fm=FR.mu*N,slide=T>fm+.01,fr=slide?fm:T,eqm=Math.abs(T-fm)<.51&&T>0; if(slide) FR.v=Math.min(160,FR.v+(T-fm)*dt*14); else if(eqm) FR.v=Math.max(FR.v,50); else FR.v=Math.max(0,FR.v-300*dt); FR.o=(FR.o+FR.v*dt)%50;
+  ctx.fillStyle='#efe9da'; ctx.fillRect(0,0,w,h); const col={0.1:'#cfe6f4',0.3:'#b98a5a',0.7:'#4a4e54'}[FR.mu], Y=222; ctx.fillStyle=col; ctx.fillRect(0,Y,500,50); ctx.strokeStyle='rgba(0,0,0,.2)'; ctx.lineWidth=2; for(let x=-FR.o;x<500;x+=50){ ctx.beginPath(); ctx.moveTo(x,Y); ctx.lineTo(x+14,Y+22); ctx.stroke(); }
+  const bw=64+m*5,bh=44+m*2.5,bx=150,by=Y-bh,cy=by+bh/2; ctx.fillStyle='#8d5f35'; rr(ctx,bx,by,bw,bh,5); ctx.fill(); label(ctx,m+' кг',bx+bw/2,cy+6,'#fff',16,'center',true);
+  const sL=30+T*.9; hspring(ctx,bx+bw,bx+bw+sL,cy,10,8,COLS); ctx.fillStyle='#4a4f57'; ctx.fillRect(bx+bw+sL,cy-4,20,8);
+  if(T) vec(ctx,bx+bw+sL+24,cy,Math.min(60,16+T*.7),0,COLS,'F',8,-12); if(fr>0) vec(ctx,bx,Y-5,-Math.min(120,14+fr*1.6),0,COLU,'F үйк',-10,-14); vec(ctx,bx+bw/2,cy+8,0,50,COLG,'',0,0); vec(ctx,bx+bw/2+22,by,0,-44,COLN,'N',18,8);
+  label(ctx,`N = ${N} Н, μ = ${fx1(FR.mu)}, μN = ${fx1(fm)} Н`,20,30,'#1d2430',17,'left',true);
+  const st=slide?'Сырғанайды, күштер теңгерілмеген: жылдамдығы артады':eqm?'Шек: F = μN, тартса бірқалыпты сырғанайды':T?'Тыныштық үйкелісі: F үйк = F тарту':'Тарту күші жоқ, үйкеліс те жоқ'; label(ctx,st,20,58,slide?'#b8442f':eqm?'#2e7d4f':'#1f5fa8',16,'left',true);
+  label(ctx,`F үйк = ${fx1(fr)} Н`,20,h-24,COLU,22,'left',true,'Georgia, serif');
+  /* микро */ ctx.fillStyle='#fff'; rr(ctx,20,72,140,84,8); ctx.fill(); ctx.save(); rr(ctx,20,72,140,84,8); ctx.clip(); const am=FR.mu*20+1.5; ctx.fillStyle='#8d5f35'; ctx.beginPath(); ctx.moveTo(20,72); for(let x=0;x<=140;x+=10) ctx.lineTo(20+x-(FR.o%20),112+(x%20?am:-am)); ctx.lineTo(180,72); ctx.fill(); ctx.fillStyle=col==='#cfe6f4'?'#9cc8e4':col; ctx.beginPath(); ctx.moveTo(20,156); for(let x=0;x<=140;x+=10) ctx.lineTo(20+x,118+(x%20?-am:am)); ctx.lineTo(160,156); ctx.fill(); ctx.restore(); label(ctx,'беттер (үлкейтілген)',90,170,'#6a6658',12);
+  /* график */ const O=[535,285],G=[270,245],X=q=>O[0]+q/80*G[0],Yy=q=>O[1]-q/80*G[1]; ctx.fillStyle='#fff'; ctx.fillRect(O[0],O[1]-G[1],G[0],G[1]); for(let q=20;q<=80;q+=20){ ctx.strokeStyle='#e4decd'; ctx.lineWidth=1; ctx.beginPath(); ctx.moveTo(X(q),O[1]); ctx.lineTo(X(q),O[1]-G[1]); ctx.moveTo(O[0],Yy(q)); ctx.lineTo(O[0]+G[0],Yy(q)); ctx.stroke(); label(ctx,q,X(q),O[1]+16,'#6a6658',12); label(ctx,q,O[0]-5,Yy(q)+4,'#6a6658',12,'right'); }
+  ctx.strokeStyle=COLU; ctx.lineWidth=4; ctx.beginPath(); ctx.moveTo(X(0),Yy(0)); ctx.lineTo(X(fm),Yy(fm)); ctx.lineTo(X(80),Yy(fm)); ctx.stroke(); ctx.fillStyle='#1d2430'; ctx.beginPath(); ctx.arc(X(T),Yy(fr),7,0,7); ctx.fill(); label(ctx,'тыныштық',X(fm/2)+6,Yy(fm/2)+22,'#6a6658',12,'left'); label(ctx,'сырғанау',X((fm+80)/2),Yy(fm)-8,'#6a6658',12,'center');
+  arrow(ctx,O[0],O[1],O[0],O[1]-G[1]-10,'#1d2430',2,9); arrow(ctx,O[0],O[1],O[0]+G[0]+10,O[1],'#1d2430',2,9); label(ctx,'F үйк, Н',O[0]+6,O[1]-G[1]+2,'#1d2430',13,'left',true); label(ctx,'F тарту, Н',O[0]+G[0],O[1]+30,'#1d2430',13,'right',true); }};
+[{q:'m = 5 кг, μ = 0,3. Бірқалыпты сүйреу үшін қандай күш керек?',pre:'F = ',a:15,unit:'Н',hint:'F = μmg',sol:'F = 0,3 · 5 · 10 = 15 Н'},
+ {q:'Сол білеушені 10 Н күшпен тартса, ол қозғалмайды. Үйкеліс күші қандай?',pre:'F үйк = ',a:10,unit:'Н',hint:'Дене тыныштықта: күштер теңгерілген',sol:'10 Н < 15 Н, тыныштық үйкелісі тарту күшіне тең: 10 Н.'}].forEach((o,i)=>mkQ($('qF'),o,i));
+
+/* 7. Кесте */
+document.querySelectorAll('#cmpT .rv').forEach(c=>c.onclick=()=>{ c.classList.add('op'); SND.clink(); });
+$('cmpAll').onclick=()=>document.querySelectorAll('#cmpT .rv').forEach(c=>c.classList.add('op'));
+$('cmpHide').onclick=()=>document.querySelectorAll('#cmpT .rv').forEach(c=>c.classList.remove('op'));
+
+/* 8. Сұрыптау */
+const SNM=['ауырлық','серпімділік','үйкеліс'];
+const SRT=[['Алма ағаштан құлайды',0],['Садақ оқты атып жібереді',1],['Тежегіш доңғалақты тоқтатады',2],['Батут баланы жоғары лақтырады',1],['Өзен суы төмен қарай ағады',0],['Сіріңкені қорапқа сүйкесе, тұтанады',2],['Динамометрдің серіппесі созылады',1],['Аяқ киім мұзда тайып кетпейді',2],['Лақтырылған доп жерге қайтып түседі',0]];
+(()=>{ const box=$('srt'); let done=0,right=0; const res=()=>{ $('srtR').innerHTML=done<SRT.length?`Дұрыс: <b>${right}</b> · қалды: <b>${SRT.length-done}</b>`:`Дұрыс: <b>${right} / ${SRT.length}</b>. Жарайсың!`; };
+  SRT.forEach(([n,a])=>{ const d=document.createElement('div'); d.className='sri'; d.innerHTML=`<span>${n}</span><div>${SNM.map(s=>`<button class="btn">${s}</button>`).join('')}</div>`; const bs=d.querySelectorAll('button');
+    bs.forEach((b,j)=>b.onclick=()=>{ bs.forEach(x=>x.disabled=true); done++; if(j===a){ right++; SND.ok(); d.classList.add('ok'); } else { SND.bad(); d.classList.add('no'); } d.querySelector('span').innerHTML=`${n} <b>– ${SNM[a]}</b>`; res(); }); box.appendChild(d); }); res(); })();
+
+/* 10. ФС: қысқы жол */
+const RO={on:false,t:0}; $('roGo').onclick=()=>{ RO.on=true; RO.t=0; SND.beep(); }; $('roRe').onclick=()=>{ RO.on=false; RO.t=0; };
+LABS.cRoad={frame(ctx,w,h,dt){ if(RO.on) RO.t+=dt*4; const v=20,X0=110,PX=(w-X0-30)/210,cross=X0+50*PX; ctx.fillStyle='#dfeaf2'; ctx.fillRect(0,0,w,h);
+  [[.7,'Құрғақ асфальт, μ = 0,7','#4a4e54','#d63a35'],[.1,'Тайғақ мұз, μ = 0,1','#a9cfe6','#1f6fc4']].forEach(([mu,nm,rc,cc],i)=>{ const yt=22+i*104,a=mu*10,tS=v/a,t=Math.min(RO.t,tS),s=v*t-a*t*t/2,S=v*v/(2*a),done=RO.on&&RO.t>=tS; ctx.fillStyle=rc; ctx.fillRect(0,yt+24,w,56); label(ctx,nm,12,yt+16,'#1d2430',16,'left',true);
+    ctx.fillStyle='rgba(255,255,255,.85)'; for(let q=0;q<6;q++) ctx.fillRect(cross-3,yt+26+q*9,14,5);
+    miniCar(ctx,X0+s*PX-20,yt+54,cc,.62,s*.4); if(RO.on&&!done){ ctx.fillStyle='rgba(235,235,235,.5)'; ctx.beginPath(); ctx.arc(X0+s*PX-62,yt+62,6,0,7); ctx.fill(); }
+    if(done){ const safe=S<50; label(ctx,`s = ${fx1(S,1)} м · `+(safe?'✔ Өткелге жетпей тоқтады':'✘ Өткелден әрі кетті!'),w-12,yt+16,safe?'#2e7d4f':'#b8442f',17,'right',true); } });
+  label(ctx,'өткел: 50 м',cross,14,'#b8442f',14,'center',true); }};
+[{q:'Жылдамдықты ХБЖ-да жаз.',pre:'v = ',a:20,unit:'м/с',hint:'72 000 м / 3600 с',sol:'72 км/сағ = 20 м/с'},
+ {q:'Құрғақ асфальттағы тежелу жолы?',pre:'s₁ = ',a:28.6,unit:'м',hint:'400 / (2·0,7·10)',sol:'s₁ = 400 / 14 ≈ 28,6 м'},
+ {q:'Мұздағы тежелу жолы?',pre:'s₂ = ',a:200,unit:'м',hint:'400 / (2·0,1·10)',sol:'s₂ = 400 / 2 = 200 м'},
+ {q:'Жол қауіпсіздігіне сай дұрыс кеңес қайсы?',ch:['Жылдамдықты азайтып, қашықтықты сақтау, қысқы шина','Мұзда жылдамырақ жүру','Тежегішті басқа, жылдамдық маңызды емес'],a:0,sol:'Мұзда тежелу жолы 7 есе ұзын (200 / 28,6 ≈ 7).'}].forEach((o,i)=>mkQ($('qRoad'),o,i));
+
+/* 11. ФС: серіппелер */
+const SP={y:0}; $('spN').oninput=()=>{ const n=+$('spN').value; $('spNv').textContent=`${n} адам, ${n*80} кг`; }; $('spN').oninput();
+LABS.cSp={frame(ctx,w,h,dt){ const n=+$('spN').value,F=n*800,per=F/4,x=per/25000*100,PX=8; SP.y+=(x-SP.y)*Math.min(1,dt*5); const G=190,wy=G-30,by=wy-62+SP.y*PX; ctx.fillStyle='#e8eef2'; ctx.fillRect(0,0,w,h); ctx.fillStyle='#4a4e54'; ctx.fillRect(0,G,w,40);
+  const cx=240,lw=[cx-130,cx+130]; ctx.fillStyle='#2d6fb0'; rr(ctx,cx-200,by-6,400,40,12); ctx.fill(); ctx.beginPath(); ctx.moveTo(cx-120,by-6); ctx.quadraticCurveTo(cx-90,by-74,cx-10,by-74); ctx.quadraticCurveTo(cx+80,by-74,cx+130,by-6); ctx.closePath(); ctx.fill(); ctx.fillStyle='#cfe6f4'; ctx.beginPath(); ctx.moveTo(cx-100,by-8); ctx.quadraticCurveTo(cx-78,by-62,cx-10,by-62); ctx.quadraticCurveTo(cx+66,by-62,cx+108,by-8); ctx.closePath(); ctx.fill();
+  for(let i=0;i<n;i++){ const px=cx-74+i*38; ctx.fillStyle='#f1c9a7'; ctx.beginPath(); ctx.arc(px,by-34,10,0,7); ctx.fill(); ctx.fillStyle='#1d2430'; ctx.fillRect(px-9,by-24,18,16); }
+  lw.forEach(lx=>{ spring(ctx,lx,by+34,wy,8,13,'#c8352b',4); ctx.fillStyle='#22262b'; ctx.beginPath(); ctx.arc(lx,wy,30,0,7); ctx.fill(); ctx.fillStyle='#c3c8ce'; ctx.beginPath(); ctx.arc(lx,wy,12,0,7); ctx.fill(); });
+  label(ctx,`Жүктеме: F = ${F} Н`,500,50,'#1d2430',21,'left',true,'Georgia, serif'); label(ctx,`Бір серіппеге: ${per} Н`,500,86,COLG,21,'left',true,'Georgia, serif'); label(ctx,`x = ${fx1(x,1)} см`,500,124,'#c8352b',30,'left',true,'Georgia, serif'); label(ctx,'k = 25 000 Н/м',500,156,'#6a6658',16,'left'); }};
+[{q:'5 адамның ауырлық күші қандай?',pre:'F = ',a:4000,unit:'Н',hint:'m = 5 · 80 кг',sol:'F = 400 · 10 = 4000 Н'},
+ {q:'Бір серіппеге қандай күш түседі?',pre:'F₁ = ',a:1000,unit:'Н',hint:'4 серіппеге бөл',sol:'F₁ = 4000 / 4 = 1000 Н'},
+ {q:'Әр серіппе неше сантиметрге сығылады?',pre:'x = ',a:4,unit:'см',hint:'x = F₁ / k',sol:'x = 1000 / 25 000 = 0,04 м = 4 см'},
+ {q:'Көлікті шамадан тыс тиесе, не болады?',ch:['Серіппе шегіне дейін сығылып, бұзылуы мүмкін','Серіппе күшейіп кетеді','Ештеңе өзгермейді'],a:0,sol:'Гук заңы шағын деформация үшін орындалады. Шамадан артық жүктемеде серіппе серпімділігін жоғалтады.'}].forEach((o,i)=>mkQ($('qSp'),o,i));
+
+/* 12. ФС: шкаф */
+const CA={w:0,o:0}; document.querySelectorAll('#caB [data-w]').forEach(b=>b.onclick=()=>{ CA.w=+b.dataset.w; document.querySelectorAll('#caB [data-w]').forEach(x=>x.classList.toggle('on',x===b)); SND.clink(); });
+LABS.cCab={frame(ctx,w,h,dt){ CA.o=(CA.o+dt*(CA.w?60:18))%120; const F=CA.w?12:180,G=190; ctx.fillStyle='#f3ead8'; ctx.fillRect(0,0,w,G); ctx.fillStyle='#b98a5a'; ctx.fillRect(0,G,w,h-G); ctx.strokeStyle='rgba(0,0,0,.15)'; ctx.lineWidth=2; for(let x=-CA.o;x<w;x+=120){ ctx.beginPath(); ctx.moveTo(x,G); ctx.lineTo(x+30,h); ctx.stroke(); }
+  const cx=300,ch=CA.w?126:146,b=CA.w?G-22:G; ctx.fillStyle='#8d5f35'; rr(ctx,cx,b-ch,120,ch,4); ctx.fill(); ctx.strokeStyle='#5f3e22'; ctx.lineWidth=2; ctx.strokeRect(cx+8,b-ch+8,48,ch-16); ctx.strokeRect(cx+64,b-ch+8,48,ch-16);
+  if(CA.w){ ctx.fillStyle='#4a4f57'; ctx.fillRect(cx-6,b,132,6); [cx+16,cx+104].forEach(x=>{ ctx.fillStyle='#22262b'; ctx.beginPath(); ctx.arc(x,G-8,8,0,7); ctx.fill(); }); }
+  const hx=cx-46; ctx.strokeStyle='#1d2430'; ctx.lineWidth=7; ctx.lineCap='round'; ctx.beginPath(); ctx.arc(hx-18,74,14,0,7); ctx.stroke(); ctx.beginPath(); ctx.moveTo(hx-22,88); ctx.lineTo(hx-34,140); ctx.lineTo(hx-46,G-2); ctx.moveTo(hx-34,140); ctx.lineTo(hx-16,G-2); ctx.moveTo(hx-24,100); ctx.lineTo(cx-4,112); ctx.stroke(); ctx.lineCap='butt';
+  vec(ctx,cx-6,132,Math.min(100,16+F*.45),0,COLS,'',0,0); vec(ctx,cx+1,G-4,-Math.min(100,12+F*.45),0,COLU,'',0,0); label(ctx,CA.w?'Домалау үйкелісі: μ = 0,02':'Сырғанау үйкелісі: μ = 0,3',500,50,'#1d2430',20,'left',true); label(ctx,`F = μmg = ${F} Н`,500,92,'#b8442f',32,'left',true,'Georgia, serif'); label(ctx,CA.w?'Оңай жылжиды':'Ауыр жылжиды',500,126,'#6a6658',18,'left'); }};
+[{q:'Дөңгелексіз бірқалыпты жылжыту күші?',pre:'F₁ = ',a:180,unit:'Н',hint:'F = μmg',sol:'F₁ = 0,3 · 60 · 10 = 180 Н'},
+ {q:'Дөңгелекті тұғырмен күш қандай?',pre:'F₂ = ',a:12,unit:'Н',hint:'μ = 0,02',sol:'F₂ = 0,02 · 60 · 10 = 12 Н'},
+ {q:'Күш неше есе азаяды?',pre:'',a:15,unit:'есе',hint:'F₁ / F₂',sol:'180 / 12 = 15 есе'},
+ {q:'Шкаф неге дөңгелекпен оңай жылжиды?',ch:['Сырғанау үйкелісі домалау үйкелісімен алмасады','Шкафтың массасы азаяды','Ауырлық күші жоғалады'],a:0,sol:'Масса мен ауырлық күші өзгермейді, ал μ кемиді.'}].forEach((o,i)=>mkQ($('qCab'),o,i));
+
+document.querySelectorAll('#lvTabs [data-v]').forEach(b=>b.onclick=()=>{ document.querySelectorAll('#lvTabs [data-v]').forEach(x=>x.classList.toggle('on',x===b)); document.querySelectorAll('.lvp').forEach(p=>p.style.display=p.dataset.p===b.dataset.v?'':'none'); fitSlide(slides[cur]); });
+exmBind();
+/* ---------- жақындату: алыстағы партаға тапсырманы үлкейтіп көрсету ---------- */
+const ZSEL='.qk,.tq,.exm,.bq,.aop,.rule,.fbox,canvas.lab,.card,.tip,.warn';
+const ZM={pick:false,el:null,ph:null};
+function zoomPick(on){ ZM.pick=on; $('stage').classList.toggle('zpick',on); $('zm').classList.toggle('on',on); if(on) toast('Үлкейтетін тапсырманы немесе суретті басыңыз'); }
+function zoomClose(){ if(ZM.el){ ZM.ph.replaceWith(ZM.el); ZM.el=null; ZM.ph=null; } $('zov').classList.remove('on'); }
+function zoomOpen(el){ zoomClose(); const w=el.offsetWidth, h=el.offsetHeight, ph=document.createElement('div'); ph.style.cssText=`width:${w}px;height:${h}px;flex:none`;
+  el.replaceWith(ph); ZM.el=el; ZM.ph=ph; const wr=$('zWrap'); wr.style.width=(w+28)+'px'; wr.appendChild(el);
+  $('zov').classList.add('on'); zoomFit(); zoomPick(false); SND.page(); }
+function zoomFit(){ const wr=$('zWrap'); if(!ZM.el) return; const s=Math.max(1,Math.min(1480/wr.offsetWidth,790/wr.offsetHeight,2.8)); wr.style.transform=`scale(${s})`; }
+if(window.ResizeObserver) new ResizeObserver(zoomFit).observe($('zWrap'));
+function zoomTarget(e){ if(!ZM.pick||e.target.closest('#zm,.bottom,.rightw')) return null; const el=e.target.closest(ZSEL); return el&&slides[cur].contains(el)?el:null; }
+document.addEventListener('pointerdown',e=>{ if(zoomTarget(e)){ e.stopPropagation(); e.preventDefault(); } },true);
+document.addEventListener('click',e=>{ const el=zoomTarget(e); if(el){ e.stopPropagation(); e.preventDefault(); zoomOpen(el); } },true);
+$('zm').onclick=()=>{ if(ZM.el){ zoomClose(); return; } zoomPick(!ZM.pick); };
+$('zx').onclick=zoomClose; $('zov').addEventListener('click',e=>{ if(e.target===$('zov')) zoomClose(); });
+document.addEventListener('keydown',e=>{ if(e.key==='Escape'){ zoomClose(); zoomPick(false); return; }
+  if(/INPUT|SELECT|TEXTAREA/.test(document.activeElement.tagName)) return; if('zZяЯ'.includes(e.key)) $('zm').onclick(); });
+
+/* 16–17. Жеке жұмыс және бағалау */
+const TQ={A1:[20,1],A2:[8,1],A3:[15,1],A4:[5,1],B1:[60,2],B2:[500,2],B3:[0.2,2],B4:[80,2],C1:[400,2],C2:[7.5,2],C3:[20,2],C4:[30,2]};
+const MAXP=20;
+let ROSTER=store.get('ku_roster',store.get('ku_roster',null)); if(!ROSTER){ ROSTER=[]; for(let i=1;i<=20;i++) ROSTER.push(i+'-оқушы'); }
+let RES=store.get('ku_res',{}), who=0;
+const pts=n=>Object.values(RES[n]||{}).reduce((a,r)=>a+(r.p||0),0);
+const mark=p=>p>=18?5:p>=14?4:p>=9?3:2;
+function tkFill(){ const sel=$('tkWho'); sel.innerHTML=ROSTER.map((n,i)=>`<option value="${i}">${i+1}. ${n}</option>`).join(''); if(who>=ROSTER.length) who=0; sel.value=who; tkLoad(); }
+function tkLoad(){ const r=RES[ROSTER[who]]||{};
+  document.querySelectorAll('[data-q]').forEach(inp=>{ const q=inp.dataset.q, s=r[q], out=inp.parentElement.querySelector('.r');
+    inp.value=s?s.v:''; inp.className=s&&s.done?(s.p>0?'okk':'nok'):''; inp.disabled=!!(s&&s.done);
+    out.innerHTML=!s?'':s.done?(s.p>0?`<span class="good">✔ +${nf(s.p,1)}</span>`:`<span class="bad">✘ ${nf(TQ[q][0],5)}</span>`):'<span class="bad">✘ тағы 1 мүмкіндік</span>'; });
+  $('tkScore').textContent=nf(pts(ROSTER[who]),1)+' / '+MAXP+' балл'; }
+function tkCheck(inp){ const q=inp.dataset.q, n=ROSTER[who]; if(!n) return; const v=parseNum(inp.value); if(!isFinite(v)){ toast('Санды жаз'); return; }
+  const r=RES[n]=RES[n]||{}; const s=r[q]=r[q]||{t:0,p:0,v:'',done:false}; if(s.done) return;
+  s.t++; s.v=inp.value; if(near(v,TQ[q][0])){ s.p=s.t===1?TQ[q][1]:TQ[q][1]/2; s.done=true; SND.ok(); } else { SND.bad(); if(s.t>=2){ s.done=true; s.p=0; } }
+  store.set('ku_res',RES); tkLoad(); grBuild(); }
+document.querySelectorAll('[data-q]').forEach(inp=>{ inp.addEventListener('keydown',e=>{ if(e.key==='Enter'){ tkCheck(inp); e.preventDefault(); } });
+  const b=document.createElement('button'); b.className='btn'; b.style.cssText='padding:3px 9px;font-size:14px'; b.textContent='✓'; b.title='Тексеру'; b.onclick=()=>tkCheck(inp); inp.after(b); });
+$('tkWho').onchange=()=>{ who=+$('tkWho').value; tkLoad(); };
+$('tkPrev').onclick=()=>{ who=(who-1+ROSTER.length)%ROSTER.length; $('tkWho').value=who; tkLoad(); };
+$('tkNext').onclick=()=>{ who=(who+1)%ROSTER.length; $('tkWho').value=who; tkLoad(); };
+function grBuild(){ let h='<tr><th>№</th><th>Аты-жөні</th><th>A (4)</th><th>B (8)</th><th>C (8)</th><th>Барлығы</th><th>Баға</th></tr>', c=[0,0,0,0];
+  ROSTER.forEach((n,i)=>{ const r=RES[n]||{}, sum=k=>Object.entries(r).filter(([q])=>q[0]===k).reduce((a,[,s])=>a+(s.p||0),0), p=pts(n), any=Object.keys(r).length;
+    if(any) c[5-mark(p)]++;
+    h+=`<tr><td>${i+1}</td><td class="l">${n}</td><td>${any?nf(sum('A'),1):''}</td><td>${any?nf(sum('B'),1):''}</td><td>${any?nf(sum('C'),1):''}</td><td><b>${any?nf(p,1):''}</b></td><td><b>${any?'«'+mark(p)+'»':''}</b></td></tr>`; });
+  $('grTab').innerHTML=h; $('g1').textContent=c[0]; $('g2').textContent=c[1]; $('g3').textContent=c[2]; $('g4').textContent=c[3]; }
+$('roster').value=ROSTER.join('\n');
+$('rsSave').onclick=()=>{ const l=$('roster').value.split('\n').map(s=>s.trim()).filter(Boolean); if(!l.length){ toast('Тізім бос'); return; } ROSTER=l; store.set('ku_roster',ROSTER); tkFill(); grBuild(); toast('Тізім сақталды: '+l.length+' оқушы'); };
+$('grClr').onclick=()=>{ if(!confirm('Барлық оқушының нәтижесі өшеді. Жалғастырамыз ба?')) return; RES={}; store.set('ku_res',RES); tkLoad(); grBuild(); };
+tkFill(); grBuild();
+/* ---------- тақта ---------- */
+const board=(()=>{ const cv=$('ink'), ctx=cv.getContext('2d'); let ink=store.get('ku_ink',{}), color='#f2efe2', width=3.6, eraser=false, curS=null, saveT;
+  const list=()=> (ink[cur]=ink[cur]||[]);
+  function resize(){ const r=cv.getBoundingClientRect(); if(!r.width) return; const k=window.devicePixelRatio||1; cv.width=Math.round(r.width*k); cv.height=Math.round(r.height*k); redraw(); }
+  function seg(s,i){ const W=cv.width,H=cv.height,p=s.p,base=s.w*W/600; ctx.globalCompositeOperation=s.e?'destination-out':'source-over'; ctx.strokeStyle=s.c; ctx.lineCap='round'; ctx.lineJoin='round';
+    if(i===0){ ctx.lineWidth=base*(.6+p[0][2]*.8); ctx.beginPath(); ctx.moveTo(p[0][0]*W,p[0][1]*H); ctx.lineTo(p[0][0]*W+.1,p[0][1]*H); ctx.stroke(); return; }
+    const a=p[i-1],b=p[i],z=p[i-2]||a; ctx.lineWidth=base*(.6+b[2]*.8); ctx.beginPath(); ctx.moveTo((z[0]+a[0])/2*W,(z[1]+a[1])/2*H); ctx.quadraticCurveTo(a[0]*W,a[1]*H,(a[0]+b[0])/2*W,(a[1]+b[1])/2*H); ctx.stroke(); }
+  function redraw(){ ctx.globalCompositeOperation='source-over'; ctx.clearRect(0,0,cv.width,cv.height); for(const s of list()) for(let i=0;i<s.p.length;i++) seg(s,i); ctx.globalCompositeOperation='source-over'; }
+  function save(){ clearTimeout(saveT); saveT=setTimeout(()=>store.set('ku_ink',ink),400); }
+  function pt(e){ const r=cv.getBoundingClientRect(); return [(e.clientX-r.left)/r.width,(e.clientY-r.top)/r.height,e.pointerType==='pen'?(e.pressure||.5):.5]; }
+  cv.addEventListener('pointerdown',e=>{ if(e.button>0&&e.pointerType==='mouse') return; cv.setPointerCapture(e.pointerId); curS={c:color,w:eraser?width*5:width,e:eraser,p:[pt(e)]}; list().push(curS); seg(curS,0); e.preventDefault(); });
+  cv.addEventListener('pointermove',e=>{ if(!curS) return; const evs=e.getCoalescedEvents?e.getCoalescedEvents():[e]; for(const ev of evs){ curS.p.push(pt(ev)); seg(curS,curS.p.length-1); } });
+  const end=()=>{ if(curS){ curS=null; ctx.globalCompositeOperation='source-over'; save(); } };
+  cv.addEventListener('pointerup',end); cv.addEventListener('pointercancel',end); cv.addEventListener('lostpointercapture',end);
+  document.querySelectorAll('.sw').forEach(b=>b.onclick=()=>{ color=b.dataset.c; eraser=false; $('erase').classList.remove('on'); document.querySelectorAll('.sw').forEach(x=>x.classList.toggle('on',x===b)); });
+  document.querySelectorAll('[data-w]').forEach(b=>b.onclick=()=>{ width=+b.dataset.w; document.querySelectorAll('[data-w]').forEach(x=>x.classList.toggle('on',x===b)); });
+  $('erase').onclick=()=>{ eraser=!eraser; $('erase').classList.toggle('on',eraser); };
+  function undo(){ list().pop(); redraw(); save(); } $('undo').onclick=undo;
+  $('wipe').onclick=()=>{ if(!list().length) return; ink[cur]=[]; redraw(); save(); toast('Осы беттегі жазба тазаланды'); };
+  return {resize,redraw,undo}; })();
+
+/* ---------- слайдты сыйғызу (тақта ашық/жабық) ---------- */
+const slides=[...document.querySelectorAll('.slide')]; let cur=0;
+slides.forEach(s=>{ if(s.classList.contains('nofit')) return; const sc=document.createElement('div'); sc.className='sc'; while(s.firstChild) sc.appendChild(s.firstChild); s.appendChild(sc); });
+function fitSlide(s){ if(!s||s.classList.contains('nofit')) return; const sc=s.querySelector('.sc'), L=$('slides');
+  const AW=L.clientWidth-48, AH=L.clientHeight-26; if(AW<=0) return; let best={k:0,w:900};
+  sc.style.transform='none';
+  for(let w=880; w<=Math.max(880,Math.min(1500,AW)); w+=40){ sc.style.width=w+'px'; const h=sc.offsetHeight; const k=Math.min(AW/w,AH/h,1.75); if(k>best.k+.004) best={k,w}; }
+  sc.style.width=best.w+'px'; sc.style.left=(24+(AW-best.w*best.k)/2)+'px'; sc.style.transform=`scale(${best.k})`; }
+let NB=store.get('ku_noboard',false);
+function setBoard(hidden){ NB=hidden; store.set('ku_noboard',NB); $('stage').classList.toggle('noboard',NB); $('rightw').style.transform=''; fitSlide(slides[cur]); setTimeout(()=>{ fitSlide(slides[cur]); board.resize(); },380); }
+$('hideB').onclick=()=>setBoard(true);
+(()=>{ // тақтаны қолмен оңға ысыру → жасырылады; оң жақтағы «ТАҚТА» белгісін басу → қайта шығады
+  const g=$('grip'), rw=$('rightw'); let x0=null;
+  const k=()=>$('stage').getBoundingClientRect().width/1600;
+  g.addEventListener('pointerdown',e=>{ x0=e.clientX; g.setPointerCapture(e.pointerId); rw.classList.add('drag'); e.preventDefault(); });
+  g.addEventListener('pointermove',e=>{ if(x0===null) return; const dx=Math.max(0,(e.clientX-x0)/k()); rw.style.transform=`translateX(${dx}px)`; });
+  const up=e=>{ if(x0===null) return; const dx=(e.clientX-x0)/k(); x0=null; rw.classList.remove('drag'); if(dx>110) setBoard(true); else rw.style.transform=''; };
+  g.addEventListener('pointerup',up); g.addEventListener('pointercancel',up);
+  $('btab').addEventListener('pointerdown',e=>{ e.preventDefault(); setBoard(false); });
+})();
+
+/* ---------- навигация ---------- */
+slides.forEach((s,i)=>{ const b=document.createElement('button'); b.className='dot'+(s.dataset.wide?' gm':''); b.textContent=i+1; b.title=s.dataset.title; b.onclick=()=>go(i); $('dots').appendChild(b); });
+function go(i){ zoomClose(); zoomPick(false); i=Math.max(0,Math.min(slides.length-1,i)); if(i!==cur) SND.page(); slides[cur].classList.remove('on'); cur=i; const s=slides[cur]; s.classList.add('on');
+  $('stitle').textContent=s.dataset.title; $('bhint').textContent=s.dataset.hint||''; $('stage').classList.toggle('wide',!!s.dataset.wide);
+  [...$('dots').children].forEach((d,j)=>d.classList.toggle('on',j===cur)); $('cnt').textContent=(cur+1)+' / '+slides.length;
+  $('prev').disabled=cur===0; $('next').disabled=cur===slides.length-1; store.set('ku_slide',cur); fitSlide(s); requestAnimationFrame(()=>{ board.resize(); fitSlide(s); }); }
+$('prev').onclick=()=>go(cur-1); $('next').onclick=()=>go(cur+1);
+document.addEventListener('keydown',e=>{ const typing=/INPUT|SELECT|TEXTAREA/.test(document.activeElement.tagName);
+  if((e.ctrlKey||e.metaKey)&&e.key.toLowerCase()==='z'&&!typing){ board.undo(); e.preventDefault(); return; } if(typing) return;
+  if(['ArrowRight','PageDown'].includes(e.key)){ go(cur+1); e.preventDefault(); } else if(['ArrowLeft','PageUp'].includes(e.key)){ go(cur-1); e.preventDefault(); }
+  else if('fFаА'.includes(e.key)) toggleFS(); else if('tTеЕ'.includes(e.key)) setBoard(!NB); });
+document.addEventListener('fullscreenchange',()=>{ $('fs').textContent=document.fullscreenElement?'✕ Толық экраннан шығу':'⛶ Толық экран'; });
+function toggleFS(){ try{ if(!document.fullscreenElement) document.documentElement.requestFullscreen(); else document.exitFullscreen(); }catch(e){} }
+$('fs').onclick=toggleFS; $('snd').onclick=()=>{ $('snd').textContent=SND.toggle()?'🔊':'🔇'; }; $('snd').textContent=SND.on?'🔊':'🔇';
+function fit(){ const s=Math.min(innerWidth/1600,innerHeight/900); $('stage').style.transform=`translate(${(innerWidth-1600*s)/2}px,${(innerHeight-900*s)/2}px) scale(${s})`; board.resize(); }
+addEventListener('resize',fit); $('slides').classList.add('notrans'); $('stage').classList.toggle('noboard',NB); fit(); setTimeout(()=>$('slides').classList.remove('notrans'),200);
+$('slides').addEventListener('transitionend',e=>{ if(e.target===$('slides')){ fitSlide(slides[cur]); board.resize(); } });
+const hashN=/^#(\d+)$/.exec(location.hash); go(hashN?(+hashN[1]-1):Math.min(store.get('ku_slide',0),slides.length-1));
+addEventListener('hashchange',()=>{ const m=/^#(\d+)$/.exec(location.hash); if(m) go(+m[1]-1); });
+if(document.fonts&&document.fonts.ready) document.fonts.ready.then(()=>fitSlide(slides[cur]));
+let prevT=performance.now();
+(function loop(now){ const dt=Math.min(.05,Math.max(0,(now-prevT)/1000)); prevT=now; TT+=dt;
+  [...slides[cur].querySelectorAll('canvas.lab'),...$('zWrap').querySelectorAll('canvas.lab')].forEach(cv=>{ const L=LABS[cv.id]; if(L) L.frame(cv.getContext('2d'),cv.width,cv.height,dt); });
+  requestAnimationFrame(loop); })(prevT);
+</script>
+<script src="phone_panel.js"></script>
+</body>
+</html>
