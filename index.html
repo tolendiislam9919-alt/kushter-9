@@ -970,7 +970,7 @@ let prevT=performance.now();
 (function(){ var ov=document.getElementById('p2ov'),fr=document.getElementById('p2fr');
   var isOpen=function(){ return ov.style.display==='block'; };
   function focusIn(){ try{ fr.contentWindow.focus(); }catch(e){} }
-  window.openPart2=function(){ if(!fr.getAttribute('src')) fr.setAttribute('src','2-bolim/index.html'); ov.style.display='block'; setTimeout(focusIn,400); };
+  window.openPart2=function(){ if(!fr.getAttribute('src')) fr.setAttribute('src','bolim2.html'); ov.style.display='block'; setTimeout(focusIn,400); };
   function close(){ ov.style.display='none'; window.focus(); }
   document.getElementById('part2Btn').onclick=window.openPart2;
   window.addEventListener('message',function(e){ if(e.data==='close-part2') close(); });
